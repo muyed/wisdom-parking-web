@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Configuration status="info" monitorInterval="60">
+    <Properties>
+        <Property name="log.level.console">trace</Property>
+        <Property name="log.path">/usr/local/wp/wp-embed-server/logs</Property>
+        <Property name="project.name">wp-embed-server</Property>
+    </Properties>
+
+    <Appenders>
+        <Console name="CONSOLE" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss,SSS}:%4p %t (%F:%L) - %m%n"/>
+        </Console>
+        <RollingFile name="ROLLING_FILE_INFO"
+                     fileName="${log.path}/${project.name}-info.log"
+                     filePattern="${log.path}/$${date:yyyy-MM}/${project.name}-info-%d{yyyy-MM-dd}-%i.log.gz">
+            <PatternLayout>
+                <Pattern>%d{yyyy-MM-dd HH:mm:ss,SSS}:%4p %t (%F:%L) - %m%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy>128MB</SizeBasedTriggeringPolicy>
+            </Policies>
+            <DefaultRolloverStrategy max="1000"/>
+        </RollingFile>
+        <RollingFile name="ROLLING_FILE_WARN"
+                     fileName="${log.path}/${project.name}-warn.log"
+                     filePattern="${log.path}/$${date:yyyy-MM}/${project.name}-warn-%d{yyyy-MM-dd}-%i.warn.gz">
+            <PatternLayout>
+                <Pattern>%d{yyyy-MM-dd HH:mm:ss,SSS}:%4p %t (%F:%L) - %m%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy>128MB</SizeBasedTriggeringPolicy>
+            </Policies>
+            <DefaultRolloverStrategy max="1000"/>
+        </RollingFile>
+        <RollingFile name="ROLLING_FILE_ERR"
+                     fileName="${log.path}/${project.name}-err.log"
+                     filePattern="${log.path}/$${date:yyyy-MM}/${project.name}-err-%d{yyyy-MM-dd}-%i.err.gz">
+            <PatternLayout>
+                <Pattern>%d{yyyy-MM-dd HH:mm:ss,SSS}:%4p %t (%F:%L) - %m%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy>128MB</SizeBasedTriggeringPolicy>
+            </Policies>
+            <DefaultRolloverStrategy max="1000"/>
+        </RollingFile>
+    </Appenders>
+
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="CONSOLE"/>
+            <AppenderRef ref="ROLLING_FILE_INFO" level="info"/>
+            <AppenderRef ref="ROLLING_FILE_WARN" level="warn"/>
+            <AppenderRef ref="ROLLING_FILE_ERR" level="error"/>
+        </Root>
+    </Loggers>
+</Configuration>

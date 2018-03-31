@@ -1,0 +1,2 @@
+mvn install:install-file -Dfile=/Users/tbj/Downloads/alipay-sdk-JAVA-20180104135049/alipay-sdk-java20180104135026.jar -DgroupId=com.alipay -DartifactId=alipay-sdk -Dversion=1.0.0 -Dpackaging=jar
+mvn install:install-file -Dfile=/Users/tbj/Downloads/alipay-sdk-JAVA-20180104135049/commons-logging-1.1.1.jar -DgroupId=com.alipay -DartifactId=commons-logging -Dversion=1.1.1 -Dpackaging=jar
