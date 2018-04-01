@@ -58,7 +58,7 @@ public class MayiPay {
     @Autowired
     private CapitalFlowService capitalFlowService;
 
-    private String charset = "utf-8";
+    private String charset = "UTF-8";
     private static final String callback = "https://api.jsppi.com/api/pay/mayi/callback";
 
     @PostConstruct
@@ -84,9 +84,9 @@ public class MayiPay {
 
         AlipayTradeAppPayRequest request = new AlipayTradeAppPayRequest();
         AlipayTradeAppPayModel model = new AlipayTradeAppPayModel();
-        model.setBody(ProductType.ofType(capitalFlow.getType()).getCode());
+        model.setBody(ProductType.ofType(capitalFlow.getType()).getName());
         model.setOutTradeNo(orderNum);
-        model.setSubject(ProductType.ofType(capitalFlow.getType()).getCode());
+        model.setSubject(ProductType.ofType(capitalFlow.getType()).getName());
         model.setTimeoutExpress("30m");
         model.setTotalAmount(capitalFlow.getAmount().toString());
         model.setProductCode("QUICK_MSECURITY_PAY");
@@ -116,11 +116,11 @@ public class MayiPay {
             throw new WPException(RespStatus.PAY_CALLBACK_FAIL, "参数检验失败");
         }
 
-        String productCode = params.get("subject");
+        String productName = params.get("subject");
         String orderNum = params.get("out_trade_no");
         String tradeStatus = params.get("trade_status");
 
-        ProductType type = ProductType.ofCode(productCode);
+        ProductType type = ProductType.ofName(productName);
 
         MayiCallback callback = MayiCallback.of(type);
 
