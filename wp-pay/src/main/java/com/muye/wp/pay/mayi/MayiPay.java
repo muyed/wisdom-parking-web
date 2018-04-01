@@ -63,6 +63,7 @@ public class MayiPay {
         try {
             params =  MayiCallback.checkNotify(request, publicKey);
         } catch (Exception e){
+            logger.error("参数检验失败: {}", e);
             throw new WPException(RespStatus.PAY_CALLBACK_FAIL, "参数检验失败");
         }
 
