@@ -22,7 +22,7 @@ public interface UserCarportMapper {
             "</script>")
     List<UserCarport> selectByCondition(@Param("query") UserCarportQuery query, Page page);
 
-    @Select("select * from user_carport where payNum = #{payNum}")
+    @Select("select * from user_carport where pay_num = #{payNum}")
     UserCarport queryByPayNum(@Param("payNum") String payNum);
 
     @Insert("insert into user_carport (user_id, carport_id, pay_num, status, parent) values (" +
