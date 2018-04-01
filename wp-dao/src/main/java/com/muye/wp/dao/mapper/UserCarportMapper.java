@@ -25,10 +25,11 @@ public interface UserCarportMapper {
     @Select("select * from user_carport where pay_num = #{payNum}")
     UserCarport queryByPayNum(@Param("payNum") String payNum);
 
-    @Insert("insert into user_carport (user_id, carport_id, pay_num, status, parent) values (" +
+    @Insert("insert into user_carport (user_id, carport_id, pay_num, deposit, status, parent) values (" +
             "#{userCarport.userId}," +
             "#{userCarport.carportId}," +
             "#{userCarport.payNum}," +
+            "#{userCarport.deposit}," +
             "#{userCarport.status}," +
             "#{userCarport.parent}" +
             ")")
