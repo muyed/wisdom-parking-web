@@ -89,7 +89,7 @@ public class MayiPay {
         model.setSubject(ProductType.ofType(capitalFlow.getType()).getName());
         model.setTimeoutExpress("30m");
         model.setTotalAmount(capitalFlow.getAmount().toString());
-        model.setProductCode(ProductType.ofType(capitalFlow.getType()).getCode());
+        model.setProductCode("QUICK_MSECURITY_PAY");
         request.setBizModel(model);
         request.setNotifyUrl(MayiPay.callback);
 

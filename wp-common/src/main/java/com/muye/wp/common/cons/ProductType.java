@@ -32,6 +32,14 @@ public enum ProductType {
         return null;
     }
 
+    public static ProductType ofCode(String code){
+        Optional<ProductType> optional = Stream.of(ProductType.values())
+                .filter(productType -> productType.code == code)
+                .findFirst();
+        if (optional.isPresent()) return optional.get();
+        return null;
+    }
+
     public static ProductType ofName(String name){
         Optional<ProductType> optional = Stream.of(ProductType.values())
                 .filter(productType -> productType.name.equals(name))
