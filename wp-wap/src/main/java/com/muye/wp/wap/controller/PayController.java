@@ -32,7 +32,7 @@ public class PayController {
         return Result.ok(payInfo);
     }
 
-    @PostMapping(value = "/mayi/callback")
+    @RequestMapping(value = "/mayi/callback")
     public String mayiCallback(HttpServletRequest request){
 
         mayiPay.callback(request);
