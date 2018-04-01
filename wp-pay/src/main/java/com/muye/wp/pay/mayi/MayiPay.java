@@ -70,7 +70,8 @@ public class MayiPay {
      * 根据支付流水单 创建支付宝支付单
      */
     public String genPayInfo(String orderNum){
-
+        logger.info(publicKey);
+        logger.info(privateKey);
         CapitalFlow capitalFlow = capitalFlowService.queryByOrderNum(orderNum);
         if (capitalFlow == null) {
             throw new WPException(RespStatus.RESOURCE_NOT_EXIST);
