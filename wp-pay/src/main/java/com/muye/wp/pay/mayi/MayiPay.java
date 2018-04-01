@@ -84,9 +84,9 @@ public class MayiPay {
 
         AlipayTradeAppPayRequest request = new AlipayTradeAppPayRequest();
         AlipayTradeAppPayModel model = new AlipayTradeAppPayModel();
-        model.setBody(ProductType.ofType(capitalFlow.getType()).getName());
+        model.setBody(ProductType.ofType(capitalFlow.getType()).getCode());
         model.setOutTradeNo(orderNum);
-        model.setSubject(ProductType.ofType(capitalFlow.getType()).getName());
+        model.setSubject(ProductType.ofType(capitalFlow.getType()).getCode());
         model.setTimeoutExpress("30m");
         model.setTotalAmount(capitalFlow.getAmount().toString());
         model.setProductCode("QUICK_MSECURITY_PAY");
@@ -116,11 +116,11 @@ public class MayiPay {
             throw new WPException(RespStatus.PAY_CALLBACK_FAIL, "参数检验失败");
         }
 
-        String productName = params.get("subject");
+        String productCode = params.get("subject");
         String orderNum = params.get("out_trade_no");
         String tradeStatus = params.get("trade_status");
 
-        ProductType type = ProductType.ofName(productName);
+        ProductType type = ProductType.ofCode(productCode);
 
         MayiCallback callback = MayiCallback.of(type);
 
