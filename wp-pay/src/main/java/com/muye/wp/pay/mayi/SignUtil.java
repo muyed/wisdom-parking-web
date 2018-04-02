@@ -69,8 +69,6 @@ public class SignUtil {
 
         sign = param.stream().reduce((a, b) -> a + "&" + b).get();
 
-        System.out.println(sign);
-
         PrivateKey priKey;
         Signature signature;
         try{

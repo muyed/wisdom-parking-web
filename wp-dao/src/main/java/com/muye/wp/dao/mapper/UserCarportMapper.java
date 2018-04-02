@@ -22,12 +22,16 @@ public interface UserCarportMapper {
             "</script>")
     List<UserCarport> selectByCondition(@Param("query") UserCarportQuery query, Page page);
 
+    @Select("select * from user_carport where id = #{id}")
+    UserCarport selectById(@Param("id") Long id);
+
     @Select("select * from user_carport where pay_num = #{payNum}")
     UserCarport queryByPayNum(@Param("payNum") String payNum);
 
-    @Insert("insert into user_carport (user_id, carport_id, pay_num, deposit, status, parent) values (" +
+    @Insert("insert into user_carport (user_id, carport_id, alias, pay_num, deposit, status, parent) values (" +
             "#{userCarport.userId}," +
             "#{userCarport.carportId}," +
+            "#{userCarport.alias}," +
             "#{userCarport.payNum}," +
             "#{userCarport.deposit}," +
             "#{userCarport.status}," +
@@ -39,6 +43,7 @@ public interface UserCarportMapper {
     @Update("update user_carport set " +
             "user_id = #{userCarport.userId}," +
             "carport_id = #{userCarport.carportId}," +
+            "alias = #{userCarport.alias}," +
             "pay_num = #{userCarport.payNum}," +
             "deposit = #{userCarport.deposit}," +
             "status = #{userCarport.status}," +

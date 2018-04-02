@@ -35,6 +35,10 @@ public class Result<T> {
         return new Result(t);
     }
 
+    public static Result ok(){
+        return Result.ok(null);
+    }
+
     public static Result fail(WPException e){
         return new Result(e);
     }

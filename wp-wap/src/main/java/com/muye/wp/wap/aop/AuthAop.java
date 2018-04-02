@@ -3,11 +3,14 @@ package com.muye.wp.wap.aop;
 import com.muye.wp.common.cons.RespStatus;
 import com.muye.wp.common.cons.UserType;
 import com.muye.wp.common.exception.WPException;
+import com.muye.wp.service.UserService;
 import com.muye.wp.wap.security.Auth;
+import com.muye.wp.wap.security.SecurityConfig;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,6 +27,9 @@ import java.util.stream.Stream;
 @Component
 @Aspect
 public class AuthAop {
+
+    @Autowired
+    UserService userService;
 
     @Before("execution(* com.muye.wp.wap.controller.*.*(..)) && @annotation(org.springframework.web.bind.annotation.RequestMapping) " +
             "|| @annotation(org.springframework.web.bind.annotation.PostMapping)" +
@@ -53,7 +59,6 @@ public class AuthAop {
             }catch (NoSuchElementException e){
                 throw new WPException(RespStatus.AUTH_ERR);
             }
-
         }
 
         UserType[] userTypes = auth.value();
@@ -75,5 +80,9 @@ public class AuthAop {
 
         if (!isPass)
             throw new WPException(RespStatus.AUTH_NOT);
+
+        //需要实名认证的判断有没有实名认证
+        if (auth.cret() && !userService.isAuth(SecurityConfig.getLoginId()))
+            throw new WPException(RespStatus.AUTH_IDCARD_NOT);
     }
 }

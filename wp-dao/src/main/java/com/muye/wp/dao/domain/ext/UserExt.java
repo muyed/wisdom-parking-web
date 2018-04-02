@@ -7,7 +7,7 @@ import lombok.Data;
  * Created by muye on 18/3/17.
  */
 @Data
-public class UserExtend extends User {
+public class UserExt extends User {
 
     private String code;
 }

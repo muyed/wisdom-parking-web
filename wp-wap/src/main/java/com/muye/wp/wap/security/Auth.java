@@ -13,4 +13,7 @@ import java.lang.annotation.*;
 public @interface Auth {
 
     UserType[] value() default {};
+
+    //是否需要通过实名验证
+    boolean cret() default false;
 }

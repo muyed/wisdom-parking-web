@@ -6,7 +6,7 @@ import com.muye.wp.common.utils.CommonUtil;
 import com.muye.wp.dao.domain.CapitalFlow;
 import com.muye.wp.dao.domain.Carport;
 import com.muye.wp.dao.domain.UserCarport;
-import com.muye.wp.dao.domain.ext.UserCarportExtend;
+import com.muye.wp.dao.domain.ext.UserCarportExt;
 import com.muye.wp.dao.domain.query.UserCarportQuery;
 import com.muye.wp.dao.mapper.UserCarportMapper;
 import com.muye.wp.dao.page.Page;
@@ -45,6 +45,11 @@ public class UserCarportServiceImpl implements UserCarportService {
     }
 
     @Override
+    public UserCarport queryById(Long id) {
+        return userCarportMapper.selectById(id);
+    }
+
+    @Override
     public UserCarport queryByPayNum(String payNum) {
         return userCarportMapper.queryByPayNum(payNum);
     }
@@ -56,7 +61,7 @@ public class UserCarportServiceImpl implements UserCarportService {
 
     @Override
     @Transactional
-    public String bind(UserCarportExtend userCarport) {
+    public String bind(UserCarportExt userCarport) {
         Carport carport = carportService.queryById(userCarport.getCarportId());
         if (carport == null){
             throw new WPException(RespStatus.RESOURCE_NOT_EXIST, "车位不存在");
@@ -94,5 +99,15 @@ public class UserCarportServiceImpl implements UserCarportService {
         capitalFlowService.add(capitalFlow);
 
         return userCarport.getPayNum();
+    }
+
+    @Override
+    public void changeAlias(Long userId, Long userCarportId, String alias) {
+        UserCarport userCarport = queryById(userCarportId);
+        if (userCarport == null || !userCarport.getUserId().equals(userId)){
+            throw new WPException(RespStatus.RESOURCE_NOT_EXIST);
+        }
+        userCarport.setAlias(alias);
+        update(userCarport);
     }
 }

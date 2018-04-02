@@ -7,7 +7,7 @@ import lombok.Data;
  * Created by muye on 18/3/30.
  */
 @Data
-public class UserCarportExtend extends UserCarport {
+public class UserCarportExt extends UserCarport {
 
     private String bindCode;
 }

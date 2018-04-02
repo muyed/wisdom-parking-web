@@ -9,7 +9,7 @@ import com.muye.wp.common.cons.UserType;
 import com.muye.wp.common.exception.WPException;
 import com.muye.wp.common.rest.Result;
 import com.muye.wp.common.utils.CommonUtil;
-import com.muye.wp.dao.domain.ext.UserExtend;
+import com.muye.wp.dao.domain.ext.UserExt;
 import com.muye.wp.service.UserService;
 import com.muye.wp.wap.security.Auth;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,7 +86,7 @@ public class LoginController {
     }
 
     @PostMapping(path = "/reg")
-    public Result reg(@RequestBody UserExtend user){
+    public Result reg(@RequestBody UserExt user){
         if (!user.getCode().equals(redisComponent.get(RedisKey.REG_PHONE + user.getPhone()))){
             throw new WPException(RespStatus.SMS_CODE_WRONG);
         }
