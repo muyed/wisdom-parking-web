@@ -17,6 +17,7 @@ import com.muye.wp.service.UserCommunityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -109,5 +110,14 @@ public class UserCarportServiceImpl implements UserCarportService {
         }
         userCarport.setAlias(alias);
         update(userCarport);
+    }
+
+    @Override
+    public boolean isPossess(Long userId, Long carportId) {
+        UserCarportQuery query = new UserCarportQuery();
+        query.setUserId(userId);
+        query.setCarportId(carportId);
+        query.setStatus(UserCarportStatus.PAID.getStatus());
+        return !CollectionUtils.isEmpty(queryByCondition(query, null));
     }
 }

@@ -12,6 +12,7 @@ public class Carport extends BaseDomain {
 
     private Long communityModuleId; //小区模块id
     private Long communityId;       //冗余小区id
+    private String carportNum;      //车位号
     private String meid;            //设备编号
     private String bindCode;        //绑定码
     private BigDecimal longitude;   //经度

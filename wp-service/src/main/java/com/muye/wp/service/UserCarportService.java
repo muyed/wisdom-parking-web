@@ -26,4 +26,9 @@ public interface UserCarportService {
     String bind(UserCarportExt userCarport);
 
     void changeAlias(Long userId, Long userCarportId, String alias);
+
+    /**
+     *  用户是否持有指定车锁
+     */
+    boolean isPossess(Long userId, Long carportId);
 }

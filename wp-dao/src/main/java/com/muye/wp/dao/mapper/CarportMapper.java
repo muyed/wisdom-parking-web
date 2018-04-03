@@ -22,6 +22,7 @@ public interface CarportMapper {
             "select * from carport where 1 = 1" +
             "<if test='query.communityModuleId'>and community_module_id = #{query.communityModuleId}</if>" +
             "<if test='query.communityId'>and community_id = #{query.communityId}</if>" +
+            "<if test='query.carportNum'>and carport_num = #{query.carportNum}</if>" +
             "<if test='query.meid'>and meid = #{query.meid}</if>" +
             "<if test='query.shareStatus'>and shareStatus = #{query.shareStatus}</if>" +
             "<if test='query.lockStatus'>and lockStatus = #{query.lockStatus}</if>" +
@@ -32,9 +33,10 @@ public interface CarportMapper {
             "</script>")
     List<Carport> selectListByCondition(@Param("query") CarportQuery query, Page page);
 
-    @Insert("insert into carport (community_module_id, community_id, meid, bind_code, longitude, latitude, share_status, lock_status) values (" +
+    @Insert("insert into carport (community_module_id, community_id, carport_num, meid, bind_code, longitude, latitude, share_status, lock_status) values (" +
             "#{carport.communityModuleId}," +
             "#{carport.communityId}," +
+            "#{carport.carportNum}," +
             "#{carport.meid}," +
             "#{carport.bindCode}," +
             "#{carport.longitude}," +
@@ -47,6 +49,7 @@ public interface CarportMapper {
     @Update("update carport set " +
             "community_module_id = #{carport.communityModuleId}," +
             "community_id = #{carport.communityId}," +
+            "carport_num = #{carport.carportNum}," +
             "meid = #{carport.meid}," +
             "bind_code = #{carport.bindCode}," +
             "longitude = #{carport.longitude}," +

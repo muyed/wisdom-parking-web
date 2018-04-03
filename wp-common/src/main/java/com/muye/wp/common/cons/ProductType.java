@@ -10,8 +10,8 @@ public enum ProductType {
 
     CARPORT_DEPOSIT(1, "CD", "车位锁押金"),
     ACCOUNT_DEPOSIT(2, "AD", "账户押金"),
-    PARKING(3, "P", "停车费"),
-    COUPON(4, "C", "卡券费用"),
+    PARKING_COST(3, "PC", "停车费"),
+    COUPON_COST(4, "CC", "卡券费用"),
     ;
 
     private Integer type;
