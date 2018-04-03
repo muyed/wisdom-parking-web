@@ -66,7 +66,7 @@ public class CarportController {
     }
 
     @Auth(UserType.GENERAL)
-    @PutMapping("/changeAlias")
+    @PostMapping("/changeAlias")
     public Result changeAlias(@RequestBody UserCarport userCarport){
         userCarportService.changeAlias(SecurityConfig.getLoginId(), userCarport.getId(), userCarport.getAlias());
         return Result.ok(null);
