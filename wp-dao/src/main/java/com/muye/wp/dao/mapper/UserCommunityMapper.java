@@ -1,7 +1,6 @@
 package com.muye.wp.dao.mapper;
 
 import com.muye.wp.dao.domain.UserCommunity;
-import com.muye.wp.dao.domain.query.UserCommunityQuery;
 import com.muye.wp.dao.page.Page;
 import org.apache.ibatis.annotations.*;
 
@@ -18,7 +17,7 @@ public interface UserCommunityMapper {
             "<if test='query.communityId != null'>and community_id = #{query.communityId}</if>" +
             "<if test='query.type != null'>and type = #{query.type}</if>" +
             "</script>")
-    List<UserCommunity> selectByCondition(@Param("query") UserCommunityQuery query, Page page);
+    List<UserCommunity> selectByCondition(@Param("query") UserCommunity query, Page page);
 
     @Select("select * from user_community where id = #{id} for update")
     UserCommunity selectByIdForUpdate(@Param("id") Long id);

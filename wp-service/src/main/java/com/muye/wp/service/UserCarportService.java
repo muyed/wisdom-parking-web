@@ -2,7 +2,6 @@ package com.muye.wp.service;
 
 import com.muye.wp.dao.domain.UserCarport;
 import com.muye.wp.dao.domain.ext.UserCarportExt;
-import com.muye.wp.dao.domain.query.UserCarportQuery;
 import com.muye.wp.dao.page.Page;
 
 import java.util.List;
@@ -12,7 +11,7 @@ import java.util.List;
  */
 public interface UserCarportService {
 
-    List<UserCarport> queryByCondition(UserCarportQuery query, Page page);
+    List<UserCarport> queryByCondition(UserCarport query, Page page);
 
     UserCarport queryById(Long id);
 

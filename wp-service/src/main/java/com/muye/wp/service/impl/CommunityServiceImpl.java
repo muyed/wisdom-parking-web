@@ -3,7 +3,6 @@ package com.muye.wp.service.impl;
 import com.muye.wp.common.cons.RespStatus;
 import com.muye.wp.common.exception.WPException;
 import com.muye.wp.dao.domain.Community;
-import com.muye.wp.dao.domain.query.CommunityQuery;
 import com.muye.wp.dao.mapper.CommunityMapper;
 import com.muye.wp.dao.page.Page;
 import com.muye.wp.service.CommunityService;
@@ -19,7 +18,7 @@ import java.util.List;
 @Service
 public class CommunityServiceImpl implements CommunityService {
 
-    @Autowired
+    @Autowired(required = false)
     private CommunityMapper communityMapper;
 
     @Override
@@ -28,13 +27,13 @@ public class CommunityServiceImpl implements CommunityService {
     }
 
     @Override
-    public List<Community> queryByCondition(CommunityQuery query, Page page) {
+    public List<Community> queryByCondition(Community query, Page page) {
         return communityMapper.selectByCondition(query, page);
     }
 
     @Override
     public void add(Community community) {
-        CommunityQuery query = new CommunityQuery();
+        Community query = new Community();
         query.setCommunityName(community.getCommunityName());
         query.setProvince(community.getProvince());
         query.setCity(community.getCity());

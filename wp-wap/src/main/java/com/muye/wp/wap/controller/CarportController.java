@@ -5,8 +5,6 @@ import com.muye.wp.common.rest.Result;
 import com.muye.wp.dao.domain.Carport;
 import com.muye.wp.dao.domain.UserCarport;
 import com.muye.wp.dao.domain.ext.UserCarportExt;
-import com.muye.wp.dao.domain.query.CarportQuery;
-import com.muye.wp.dao.domain.query.UserCarportQuery;
 import com.muye.wp.dao.page.Page;
 import com.muye.wp.service.CarportService;
 import com.muye.wp.service.UserCarportService;
@@ -39,7 +37,7 @@ public class CarportController {
 
     @Auth({UserType.OPERATOR, UserType.PROPERTY})
     @GetMapping("/list")
-    public Result<List<Carport>> list(CarportQuery query, Page page){
+    public Result<List<Carport>> list(Carport query, Page page){
         return Result.ok(carportService.queryListByCondition(query, page));
     }
 
@@ -60,7 +58,7 @@ public class CarportController {
     @Auth(UserType.GENERAL)
     @GetMapping("/myCarport")
     public Result<List<UserCarport>> myCarport(){
-        UserCarportQuery query = new UserCarportQuery();
+        UserCarport query = new UserCarport();
         query.setUserId(SecurityConfig.getLoginId());
         return Result.ok(userCarportService.queryByCondition(query, null));
     }

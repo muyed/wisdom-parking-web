@@ -4,7 +4,6 @@ import com.muye.wp.common.component.SmsComponent;
 import com.muye.wp.common.utils.SpringUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 
 /**

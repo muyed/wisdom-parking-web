@@ -1,7 +1,6 @@
 package com.muye.wp.service;
 
 import com.muye.wp.dao.domain.UserCommunity;
-import com.muye.wp.dao.domain.query.UserCommunityQuery;
 import com.muye.wp.dao.page.Page;
 
 import java.util.List;
@@ -24,7 +23,7 @@ public interface UserCommunityService {
     /**
      * 条件查询
      */
-    List<UserCommunity> queryByCondition(UserCommunityQuery query, Page page);
+    List<UserCommunity> queryByCondition(UserCommunity query, Page page);
 
     /**
      * 判断车位是否在用户认证的小区内

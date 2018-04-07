@@ -1,7 +1,6 @@
 package com.muye.wp.dao.mapper;
 
 import com.muye.wp.dao.domain.Carport;
-import com.muye.wp.dao.domain.query.CarportQuery;
 import com.muye.wp.dao.page.Page;
 import org.apache.ibatis.annotations.*;
 
@@ -26,12 +25,12 @@ public interface CarportMapper {
             "<if test='query.meid'>and meid = #{query.meid}</if>" +
             "<if test='query.shareStatus'>and shareStatus = #{query.shareStatus}</if>" +
             "<if test='query.lockStatus'>and lockStatus = #{query.lockStatus}</if>" +
-            "<if test='query.sortList != null'>" +
+            "<if test='query.sorts != null'>" +
             "   order by" +
-            "   <foreach collection='query.sortList' item='item' separator=','>${item.column} ${item.sort}</foreach>" +
+            "   <foreach collection='query.sorts' item='item' separator=','>${item.column} ${item.sort}</foreach>" +
             "</if>" +
             "</script>")
-    List<Carport> selectListByCondition(@Param("query") CarportQuery query, Page page);
+    List<Carport> selectListByCondition(@Param("query") Carport query, Page page);
 
     @Insert("insert into carport (community_module_id, community_id, carport_num, meid, bind_code, longitude, latitude, share_status, lock_status) values (" +
             "#{carport.communityModuleId}," +

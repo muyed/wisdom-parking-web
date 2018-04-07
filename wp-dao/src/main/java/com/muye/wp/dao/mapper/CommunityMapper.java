@@ -1,7 +1,6 @@
 package com.muye.wp.dao.mapper;
 
 import com.muye.wp.dao.domain.Community;
-import com.muye.wp.dao.domain.query.CommunityQuery;
 import com.muye.wp.dao.page.Page;
 import org.apache.ibatis.annotations.*;
 
@@ -23,7 +22,7 @@ public interface CommunityMapper {
             "<if test='query.communityName != null'>and community_name = #{query.communityName}</if>" +
             "<if test='query.type != null'>and type = #{query.type}</if>" +
             "</script>")
-    List<Community> selectByCondition(@Param("query") CommunityQuery query, Page page);
+    List<Community> selectByCondition(@Param("query") Community query, Page page);
 
     @Insert("insert into community (community_name, type, province, city, area, addr) values (" +
             "#{community.communityName}," +

@@ -7,7 +7,6 @@ import com.muye.wp.dao.domain.CapitalFlow;
 import com.muye.wp.dao.domain.Carport;
 import com.muye.wp.dao.domain.UserCarport;
 import com.muye.wp.dao.domain.ext.UserCarportExt;
-import com.muye.wp.dao.domain.query.UserCarportQuery;
 import com.muye.wp.dao.mapper.UserCarportMapper;
 import com.muye.wp.dao.page.Page;
 import com.muye.wp.service.CapitalFlowService;
@@ -41,7 +40,7 @@ public class UserCarportServiceImpl implements UserCarportService {
     private CapitalFlowService capitalFlowService;
 
     @Override
-    public List<UserCarport> queryByCondition(UserCarportQuery query, Page page) {
+    public List<UserCarport> queryByCondition(UserCarport query, Page page) {
         return userCarportMapper.selectByCondition(query, page);
     }
 
@@ -75,7 +74,7 @@ public class UserCarportServiceImpl implements UserCarportService {
         }
 
         //幂等
-        UserCarportQuery query = new UserCarportQuery();
+        UserCarport query = new UserCarport();
         query.setCarportId(userCarport.getCarportId());
         query.setUserId(userCarport.getUserId());
         List<UserCarport> list = queryByCondition(query, null);
@@ -114,7 +113,7 @@ public class UserCarportServiceImpl implements UserCarportService {
 
     @Override
     public boolean isPossess(Long userId, Long carportId) {
-        UserCarportQuery query = new UserCarportQuery();
+        UserCarport query = new UserCarport();
         query.setUserId(userId);
         query.setCarportId(carportId);
         query.setStatus(UserCarportStatus.PAID.getStatus());

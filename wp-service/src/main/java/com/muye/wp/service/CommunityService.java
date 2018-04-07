@@ -1,7 +1,6 @@
 package com.muye.wp.service;
 
 import com.muye.wp.dao.domain.Community;
-import com.muye.wp.dao.domain.query.CommunityQuery;
 import com.muye.wp.dao.page.Page;
 
 import java.util.List;
@@ -13,7 +12,7 @@ public interface CommunityService {
 
     Community queryById(Long id);
 
-    List<Community> queryByCondition(CommunityQuery query, Page page);
+    List<Community> queryByCondition(Community query, Page page);
 
     void add(Community community);
 

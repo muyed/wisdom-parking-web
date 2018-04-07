@@ -1,17 +1,19 @@
 package com.muye.wp.service.impl;
 
+import com.muye.wp.common.cons.ParkingShareStatus;
+import com.muye.wp.common.cons.ProductType;
 import com.muye.wp.common.cons.RespStatus;
 import com.muye.wp.common.exception.WPException;
-import com.muye.wp.dao.domain.ParkingShare;
-import com.muye.wp.dao.domain.UserCarport;
+import com.muye.wp.common.utils.CommonUtil;
+import com.muye.wp.dao.domain.*;
 import com.muye.wp.dao.mapper.ParkingShareMapper;
-import com.muye.wp.service.ParkingShareService;
-import com.muye.wp.service.UserCarportService;
+import com.muye.wp.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by muye on 18/4/3.
@@ -25,9 +27,25 @@ public class ParkingShareServiceImpl implements ParkingShareService{
     @Autowired
     private UserCarportService userCarportService;
 
+    @Autowired
+    private CarportService carportService;
+
+    @Autowired
+    private CommunityService communityService;
+
     @Override
     public boolean isExistByCarportAndTime(Long carportId, Date time) {
-        return false;
+        ParkingShare query = new ParkingShare();
+        query.setCarportId(carportId);
+        query.addRange().putColumn("start_time").putLE(time)
+                .and()
+                .addRange().putColumn("stop_time").putGE(time);
+        List<ParkingShare> shareList = parkingShareMapper.selectListByCondition(query, null);
+        return shareList.stream()
+                .filter(share -> share.getStatus() == ParkingShareStatus.MATCH.getStatus() ||
+                    share.getStatus() == ParkingShareStatus.PAID.getStatus() ||
+                    share.getStatus() == ParkingShareStatus.UNPAID.getStatus())
+                .count() > 0;
     }
 
     @Override
@@ -39,5 +57,25 @@ public class ParkingShareServiceImpl implements ParkingShareService{
             throw new WPException(RespStatus.RESOURCE_NOT_EXIST, "你未持有改车锁");
 
         //判断车锁在共享时间段内是否已经有共享单了
+        if (isExistByCarportAndTime(share.getCarportId(), share.getStartTime())
+                || isExistByCarportAndTime(share.getCarportId(), share.getStopTime()))
+            throw new WPException(RespStatus.RESOURCE_EXISTED, "该时间段内已存在共享单");
+
+        Carport carport = carportService.queryById(share.getCarportId());
+        Community community = communityService.queryById(carport.getCommunityId());
+
+        share.setCarportNum(carport.getCarportNum());
+        share.setCarportMeid(carport.getMeid());
+        share.setCommunityId(carport.getCommunityId());
+        share.setProvince(community.getProvince());
+        share.setCity(community.getCity());
+        share.setArea(community.getArea());
+        share.setLatitude(carport.getLatitude());
+        share.setLongitude(carport.getLongitude());
+        share.setStatus(ParkingShareStatus.UNPAID.getStatus());
+
+        share.setShareNum(CommonUtil.genPayNum(ProductType.PARKING_COST));
+
+        parkingShareMapper.insert(share);
     }
 }

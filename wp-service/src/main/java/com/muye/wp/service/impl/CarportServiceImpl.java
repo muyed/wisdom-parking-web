@@ -5,7 +5,6 @@ import com.muye.wp.common.exception.WPException;
 import com.muye.wp.common.utils.CommonUtil;
 import com.muye.wp.dao.domain.Carport;
 import com.muye.wp.dao.domain.CommunityModule;
-import com.muye.wp.dao.domain.query.CarportQuery;
 import com.muye.wp.dao.mapper.CarportMapper;
 import com.muye.wp.dao.page.Page;
 import com.muye.wp.service.CarportService;
@@ -22,7 +21,7 @@ import java.util.List;
 @Service
 public class CarportServiceImpl implements CarportService {
 
-    @Autowired
+    @Autowired(required = false)
     private CarportMapper carportMapper;
 
     @Autowired
@@ -31,7 +30,7 @@ public class CarportServiceImpl implements CarportService {
     @Override
     public void add(Carport carport) {
 
-        CarportQuery query = new CarportQuery();
+        Carport query = new Carport();
         query.setMeid(carport.getMeid());
 
         if (carportMapper.selectListByCondition(query, null).size() > 0)
@@ -62,7 +61,7 @@ public class CarportServiceImpl implements CarportService {
     }
 
     @Override
-    public List<Carport> queryListByCondition(CarportQuery query, Page page) {
+    public List<Carport> queryListByCondition(Carport query, Page page) {
         return carportMapper.selectListByCondition(query, page);
     }
 

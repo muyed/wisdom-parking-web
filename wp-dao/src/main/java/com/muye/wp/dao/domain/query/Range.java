@@ -8,11 +8,12 @@ import lombok.Data;
 @Data
 public class Range<T> {
 
+    private Query query;
     private String column;
-    private T GT;   //大于
-    private T LT;   //小于
-    private T GE;   //大于等于
-    private T LE;   //小于等于
+    private T gt;   //大于
+    private T lt;   //小于
+    private T ge;   //大于等于
+    private T le;   //小于等于
 
     public Range<T> putColumn(String column){
         this.column = column;
@@ -20,22 +21,26 @@ public class Range<T> {
     }
 
     public Range<T> putGT(T GT){
-        this.GT = GT;
+        this.gt = GT;
         return this;
     }
 
     public Range<T> putLT(T LT){
-        this.LT = LT;
+        this.lt = LT;
         return this;
     }
 
     public Range<T> putGE(T GE){
-        this.GE = GE;
+        this.ge = GE;
         return this;
     }
 
     public Range<T> putLE(T LE){
-        this.LE = LE;
+        this.le = LE;
         return this;
+    }
+
+    public Query and (){
+        return query;
     }
 }

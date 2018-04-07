@@ -1,7 +1,6 @@
 package com.muye.wp.dao.mapper;
 
 import com.muye.wp.dao.domain.UserCarport;
-import com.muye.wp.dao.domain.query.UserCarportQuery;
 import com.muye.wp.dao.page.Page;
 import org.apache.ibatis.annotations.*;
 
@@ -20,7 +19,7 @@ public interface UserCarportMapper {
             "<if test='query.status != null'>and status = #{query.status}</if>" +
             "<if test='query.parent != null'>and parent = #{query.parent}</if>" +
             "</script>")
-    List<UserCarport> selectByCondition(@Param("query") UserCarportQuery query, Page page);
+    List<UserCarport> selectByCondition(@Param("query") UserCarport query, Page page);
 
     @Select("select * from user_carport where id = #{id}")
     UserCarport selectById(@Param("id") Long id);

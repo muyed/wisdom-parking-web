@@ -5,7 +5,6 @@ import com.muye.wp.common.cons.UserCommunityType;
 import com.muye.wp.common.exception.WPException;
 import com.muye.wp.dao.domain.Carport;
 import com.muye.wp.dao.domain.UserCommunity;
-import com.muye.wp.dao.domain.query.UserCommunityQuery;
 import com.muye.wp.dao.mapper.UserCommunityMapper;
 import com.muye.wp.dao.page.Page;
 import com.muye.wp.service.CarportService;
@@ -23,7 +22,7 @@ import java.util.List;
 @Service
 public class UserCommunityServiceImpl implements UserCommunityService {
 
-    @Autowired
+    @Autowired(required = false)
     private UserCommunityMapper userCommunityMapper;
 
     @Autowired
@@ -38,7 +37,7 @@ public class UserCommunityServiceImpl implements UserCommunityService {
         if (communityService.queryById(userCommunity.getCommunityId()) == null)
             throw new WPException(RespStatus.RESOURCE_NOT_EXIST);
 
-        UserCommunityQuery query = new UserCommunityQuery();
+        UserCommunity query = new UserCommunity();
         query.setUserId(userCommunity.getUserId());
         query.setCommunityId(userCommunity.getCommunityId());
         query.setType(userCommunity.getType());
@@ -57,7 +56,7 @@ public class UserCommunityServiceImpl implements UserCommunityService {
     }
 
     @Override
-    public List<UserCommunity> queryByCondition(UserCommunityQuery query, Page page) {
+    public List<UserCommunity> queryByCondition(UserCommunity query, Page page) {
         return userCommunityMapper.selectByCondition(query, page);
     }
 
@@ -65,7 +64,7 @@ public class UserCommunityServiceImpl implements UserCommunityService {
     public Boolean isAtUserCommunity(Long carportId, Long userId) {
         Carport carport = carportService.queryById(carportId);
         if (carport == null) return false;
-        UserCommunityQuery query = new UserCommunityQuery();
+        UserCommunity query = new UserCommunity();
         query.setUserId(userId);
         query.setCommunityId(carport.getCommunityId());
         query.setType(UserCommunityType.PASS.getType());

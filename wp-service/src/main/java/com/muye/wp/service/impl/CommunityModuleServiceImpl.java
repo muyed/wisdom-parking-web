@@ -3,7 +3,6 @@ package com.muye.wp.service.impl;
 import com.muye.wp.common.cons.RespStatus;
 import com.muye.wp.common.exception.WPException;
 import com.muye.wp.dao.domain.CommunityModule;
-import com.muye.wp.dao.domain.query.CommunityModuleQuery;
 import com.muye.wp.dao.mapper.CommunityModuleMapper;
 import com.muye.wp.dao.page.Page;
 import com.muye.wp.service.CommunityModuleService;
@@ -20,7 +19,7 @@ import java.util.List;
 @Service
 public class CommunityModuleServiceImpl implements CommunityModuleService {
 
-    @Autowired
+    @Autowired(required = false)
     private CommunityModuleMapper communityModuleMapper;
 
     @Autowired
@@ -32,7 +31,7 @@ public class CommunityModuleServiceImpl implements CommunityModuleService {
     }
 
     @Override
-    public List<CommunityModule> queryByCondition(CommunityModuleQuery query, Page page) {
+    public List<CommunityModule> queryByCondition(CommunityModule query, Page page) {
         return communityModuleMapper.selectByCondition(query, page);
     }
 
@@ -42,7 +41,7 @@ public class CommunityModuleServiceImpl implements CommunityModuleService {
             throw new WPException(RespStatus.RESOURCE_NOT_EXIST);
         }
 
-        CommunityModuleQuery query = new CommunityModuleQuery();
+        CommunityModule query = new CommunityModule();
         query.setCommunityId(communityModule.getCommunityId());
         query.setModuleName(communityModule.getModuleName());
         if (queryByCondition(query, null).size() > 0){

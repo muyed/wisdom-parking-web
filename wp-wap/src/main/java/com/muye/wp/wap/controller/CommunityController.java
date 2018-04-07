@@ -6,9 +6,6 @@ import com.muye.wp.dao.domain.Community;
 import com.muye.wp.dao.domain.CommunityModule;
 import com.muye.wp.dao.domain.User;
 import com.muye.wp.dao.domain.UserCommunity;
-import com.muye.wp.dao.domain.query.CommunityModuleQuery;
-import com.muye.wp.dao.domain.query.CommunityQuery;
-import com.muye.wp.dao.domain.query.UserCommunityQuery;
 import com.muye.wp.dao.page.Page;
 import com.muye.wp.service.CommunityModuleService;
 import com.muye.wp.service.CommunityService;
@@ -17,7 +14,6 @@ import com.muye.wp.service.UserService;
 import com.muye.wp.wap.security.Auth;
 import com.muye.wp.wap.security.SecurityConfig;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -76,7 +72,7 @@ public class CommunityController {
      */
     @Auth({UserType.OPERATOR, UserType.GENERAL, UserType.PROPERTY})
     @GetMapping("/list")
-    public Result<List<Community>> list(CommunityQuery query, Page page){
+    public Result<List<Community>> list(Community query, Page page){
         return Result.ok(communityService.queryByCondition(query, page));
     }
 
@@ -118,7 +114,7 @@ public class CommunityController {
     public Result<List<CommunityModule>> moduleListByCommunity(@PathVariable Long communityId,
                                                                @PathVariable Integer pageNo,
                                                                @PathVariable Integer pageSize){
-        CommunityModuleQuery query = new CommunityModuleQuery();
+        CommunityModule query = new CommunityModule();
         query.setCommunityId(communityId);
         Page page = new Page();
         page.setPageNo(pageNo);
@@ -153,7 +149,7 @@ public class CommunityController {
      */
     @Auth({UserType.GENERAL, UserType.OPERATOR, UserType.PROPERTY})
     @GetMapping("/user/list")
-    public Result<List<UserCommunity>> userList(UserCommunityQuery query, Page page){
+    public Result<List<UserCommunity>> userList(UserCommunity query, Page page){
 
         //前端用户只能查询自己的记录
         User user = userService.queryById(SecurityConfig.getLoginId());

@@ -12,6 +12,16 @@ import java.util.regex.Pattern;
  */
 public class FieldUtil {
 
+    public static String setterMethodNameByFieldName(String fieldName){
+        String firstChar = String.valueOf(fieldName.charAt(0));
+        return "set" + fieldName.replaceFirst(firstChar, firstChar.toUpperCase());
+    }
+
+    public static String getterMethodNameByFieldName(String fieldName){
+        String firstChar = String.valueOf(fieldName.charAt(0));
+        return "get" + fieldName.replaceFirst(firstChar, firstChar.toUpperCase());
+    }
+
     /**
      * 将对象的空字符属性转成null
      * @param o
