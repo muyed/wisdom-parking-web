@@ -14,6 +14,7 @@ public enum RespStatus {
     SMS_CODE_WRONG(5, "短信验证码错误"),
     RESOURCE_EXISTED(6, "资源已存在"),
     RESOURCE_NOT_EXIST(7, "资源不存在"),
+    BUSINESS_ERR(8, "业务异常"),
 
     PAY_GEN_INFO_FAIL(10, "生成支付信息失败"),
     PAY_CALLBACK_FAIL(11, "支付回调失败"),

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -54,7 +55,7 @@ public class ParkingShareServiceImpl implements ParkingShareService{
 
         //判断是否持有车锁
         if (!userCarportService.isPossess(share.getUserId(), share.getCarportId()))
-            throw new WPException(RespStatus.RESOURCE_NOT_EXIST, "你未持有改车锁");
+            throw new WPException(RespStatus.RESOURCE_NOT_EXIST, "你未持有该车锁");
 
         //判断车锁在共享时间段内是否已经有共享单了
         if (isExistByCarportAndTime(share.getCarportId(), share.getStartTime())
@@ -72,10 +73,33 @@ public class ParkingShareServiceImpl implements ParkingShareService{
         share.setArea(community.getArea());
         share.setLatitude(carport.getLatitude());
         share.setLongitude(carport.getLongitude());
-        share.setStatus(ParkingShareStatus.UNPAID.getStatus());
+        share.setStatus(ParkingShareStatus.MATCH.getStatus());
 
         share.setShareNum(CommonUtil.genPayNum(ProductType.PARKING_COST));
 
         parkingShareMapper.insert(share);
+    }
+
+    @Override
+    @Transactional
+    public void unPublish(Long userId, Long id) {
+        ParkingShare share = parkingShareMapper.selectByIdForUpdate(id);
+
+        if (share == null)
+            throw new WPException(RespStatus.RESOURCE_NOT_EXIST);
+
+        if (!userCarportService.isPossess(userId, share.getCarportId()))
+            throw new WPException(RespStatus.RESOURCE_NOT_EXIST, "你未持有该车锁");
+
+        if (share.getStatus().equals(ParkingShareStatus.MATCH.getStatus()))
+            throw new WPException(RespStatus.BUSINESS_ERR, "只支持取消待匹配的共享单");
+
+        share.setStatus(ParkingShareStatus.CANCEL.getStatus());
+        parkingShareMapper.update(share);
+    }
+
+    @Override
+    public List<ParkingShare> queryListByDistance(BigDecimal longitude, BigDecimal latitude, Long limit) {
+        return parkingShareMapper.selectByDistance(longitude, latitude, limit);
     }
 }

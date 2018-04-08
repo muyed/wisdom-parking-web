@@ -7,10 +7,10 @@ import com.muye.wp.service.ParkingShareService;
 import com.muye.wp.wap.security.Auth;
 import com.muye.wp.wap.security.SecurityConfig;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * Created by muye on 18/4/3.
@@ -28,5 +28,18 @@ public class ParkingShareController {
         share.setUserId(SecurityConfig.getLoginId());
         parkingShareService.publish(share);
         return Result.ok();
+    }
+
+    @Auth(UserType.GENERAL)
+    @PostMapping("/unPublish")
+    public Result unPublish(@RequestBody ParkingShare share){
+        parkingShareService.unPublish(SecurityConfig.getLoginId(), share.getId());
+        return Result.ok();
+    }
+
+    @Auth(UserType.GENERAL)
+    @GetMapping("/loadByDistance/{longitude}/{latitude}/{limit}")
+    public Result<List<ParkingShare>> loadByDistance(@PathVariable BigDecimal longitude, @PathVariable BigDecimal latitude, @PathVariable Long limit){
+        return Result.ok(parkingShareService.queryListByDistance(longitude, latitude, limit));
     }
 }

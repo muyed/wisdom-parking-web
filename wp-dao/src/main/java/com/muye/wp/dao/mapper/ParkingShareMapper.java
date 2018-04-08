@@ -5,13 +5,18 @@ import com.muye.wp.dao.page.Page;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
  * Created by muye on 18/4/3.
  */
 public interface ParkingShareMapper {
+
+    @Select("select * from parking_share where id = #{id} for update")
+    ParkingShare selectByIdForUpdate(@Param("id") Long id);
 
     @Select("<script>" +
             "select * from parking_share where 1 =1 " +
@@ -63,4 +68,29 @@ public interface ParkingShareMapper {
             "#{share.longitude}," +
             "#{share.latitude})")
     int insert(@Param("share") ParkingShare share);
+
+    @Select("select *, " +
+            "ROUND(6378.138*2*ASIN(SQRT(POW(SIN((#{latitude}*PI()/180-latitude*PI()/180)/2),2)+COS(#{latitude}*PI()/180)*COS(latitude*PI()/180)*POW(SIN((#{longitude}*PI()/180-longitude*PI()/180)/2),2)))*1000) as distance " +
+            "from parking_share " +
+            "order by distance asc limit #{limit}")
+    List<ParkingShare> selectByDistance(@Param("longitude")BigDecimal longitude, @Param("latitude") BigDecimal latitude, @Param("limit") Long limit);
+
+    @Update("update parking_share set " +
+            "share_num = #{share.shareNum}," +
+            "user_id = #{share.userId}," +
+            "carport_id = #{share.carportId}," +
+            "start_time = #{share.startTime}," +
+            "stop_time = #{share.stopTime}," +
+            "price = #{share.price}," +
+            "status = #{share.status}," +
+            "carport_meid = #{share.carportMeid}," +
+            "carport_num = #{share.carportNum}," +
+            "community_id = #{share.communityId}," +
+            "province = #{share.province}," +
+            "city = #{share.city}," +
+            "area = #{share.area}," +
+            "longitude = #{share.longitude}," +
+            "latitude = #{share.latitude} " +
+            "where id = #{share.id}")
+    int update(@Param("share") ParkingShare share);
 }
