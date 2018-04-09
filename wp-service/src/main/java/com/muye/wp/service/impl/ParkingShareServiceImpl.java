@@ -3,6 +3,7 @@ package com.muye.wp.service.impl;
 import com.muye.wp.common.cons.ParkingShareStatus;
 import com.muye.wp.common.cons.ProductType;
 import com.muye.wp.common.cons.RespStatus;
+import com.muye.wp.common.cons.UserCommunityType;
 import com.muye.wp.common.exception.WPException;
 import com.muye.wp.common.utils.CommonUtil;
 import com.muye.wp.dao.domain.*;
@@ -11,8 +12,10 @@ import com.muye.wp.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -33,6 +36,9 @@ public class ParkingShareServiceImpl implements ParkingShareService{
 
     @Autowired
     private CommunityService communityService;
+
+    @Autowired
+    private UserCommunityService userCommunityService;
 
     @Override
     public boolean isExistByCarportAndTime(Long carportId, Date time) {
@@ -68,6 +74,7 @@ public class ParkingShareServiceImpl implements ParkingShareService{
         share.setCarportNum(carport.getCarportNum());
         share.setCarportMeid(carport.getMeid());
         share.setCommunityId(carport.getCommunityId());
+        share.setCommunityType(community.getType());
         share.setProvince(community.getProvince());
         share.setCity(community.getCity());
         share.setArea(community.getArea());
@@ -99,7 +106,19 @@ public class ParkingShareServiceImpl implements ParkingShareService{
     }
 
     @Override
-    public List<ParkingShare> queryListByDistance(BigDecimal longitude, BigDecimal latitude, Long limit) {
-        return parkingShareMapper.selectByDistance(longitude, latitude, limit);
+    public List<ParkingShare> queryListByDistance(Long userId, BigDecimal longitude, BigDecimal latitude, Long limit) {
+
+        List<Long> communityIdList = new ArrayList<>();
+
+        UserCommunity query = new UserCommunity();
+        query.setUserId(userId);
+        query.setType(UserCommunityType.PASS.getType());
+        List<UserCommunity> userCommunityList = userCommunityService.queryByCondition(query, null);
+        if (CollectionUtils.isEmpty(userCommunityList)){
+            return parkingShareMapper.selectByDistance(longitude, latitude, null, limit);
+        }
+
+        userCommunityList.stream().forEach(userCommunity -> communityIdList.add(userCommunity.getCommunityId()));
+        return parkingShareMapper.selectByDistance(longitude, latitude, communityIdList, limit);
     }
 }

@@ -26,7 +26,8 @@ public class ParkingShare extends BaseDomain {
     private Integer status;     //共享单状态
     private String carportMeid; //车位锁设备码
     private String carportNum;  //车位号
-    private Long communityId;  //小区id
+    private Long communityId;   //小区id
+    private Integer communityType;  //小区类型
     private String province;    //省
     private String city;        //市
     private String area;        //区

@@ -30,6 +30,7 @@ public interface ParkingShareMapper {
             "<if test='query.carportMeid != null'>and carport_meid = #{query.carportMeid}</if>" +
             "<if test='query.carportNum != null'>and carport_num = #{query.carportNum}</if>" +
             "<if test='query.communityId != null'>and community_id = #{query.communityId}</if>" +
+            "<if test='query.communityType != null'>and community_type = #{query.communityType}</if>" +
             "<if test='query.province != null'>and province = #{query.province}</if>" +
             "<if test='query.city != null'>and city = #{query.city}</if>" +
             "<if test='query.area != null'>and area = #{query.area}</if>" +
@@ -51,7 +52,7 @@ public interface ParkingShareMapper {
     List<ParkingShare> selectListByCondition(@Param("query") ParkingShare query, Page page);
 
     @Insert("insert into parking_share (share_num, user_id, carport_id, start_time, stop_time, price, status, " +
-            "carport_meid, carport_Num,community_id, province, city, area, longitude, latitude) values (" +
+            "carport_meid, carport_Num,community_id, community_type, province, city, area, longitude, latitude) values (" +
             "#{share.shareNum}," +
             "#{share.userId}," +
             "#{share.carportId}," +
@@ -62,6 +63,7 @@ public interface ParkingShareMapper {
             "#{share.carportMeid}," +
             "#{share.carportNum}," +
             "#{share.communityId}," +
+            "#{share.communityType}," +
             "#{share.province}," +
             "#{share.city}," +
             "#{share.area}," +
@@ -69,11 +71,23 @@ public interface ParkingShareMapper {
             "#{share.latitude})")
     int insert(@Param("share") ParkingShare share);
 
-    @Select("select *, " +
+    @Select("<script>" +
+            "select *, " +
             "ROUND(6378.138*2*ASIN(SQRT(POW(SIN((#{latitude}*PI()/180-latitude*PI()/180)/2),2)+COS(#{latitude}*PI()/180)*COS(latitude*PI()/180)*POW(SIN((#{longitude}*PI()/180-longitude*PI()/180)/2),2)))*1000) as distance " +
             "from parking_share " +
-            "order by distance asc limit #{limit}")
-    List<ParkingShare> selectByDistance(@Param("longitude")BigDecimal longitude, @Param("latitude") BigDecimal latitude, @Param("limit") Long limit);
+            "where status = 0 " +
+            "and (" +
+            "   community_type = 1 " +
+            "   <if test='communityIdList != null'>" +
+            "       or community_id in <foreach collection='communityIdList' item='item' open='(' separator=',' close=')'>#{item}</foreach>" +
+            "   </if>"+
+            ") " +
+            "order by distance asc limit #{limit}" +
+            "</script>")
+    List<ParkingShare> selectByDistance(@Param("longitude")BigDecimal longitude,
+                                        @Param("latitude") BigDecimal latitude,
+                                        @Param("communityIdList") List<Long> communityIdList,
+                                        @Param("limit") Long limit);
 
     @Update("update parking_share set " +
             "share_num = #{share.shareNum}," +
@@ -86,6 +100,7 @@ public interface ParkingShareMapper {
             "carport_meid = #{share.carportMeid}," +
             "carport_num = #{share.carportNum}," +
             "community_id = #{share.communityId}," +
+            "community_type = #{share.communityType}," +
             "province = #{share.province}," +
             "city = #{share.city}," +
             "area = #{share.area}," +

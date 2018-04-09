@@ -40,6 +40,6 @@ public class ParkingShareController {
     @Auth(UserType.GENERAL)
     @GetMapping("/loadByDistance/{longitude}/{latitude}/{limit}")
     public Result<List<ParkingShare>> loadByDistance(@PathVariable BigDecimal longitude, @PathVariable BigDecimal latitude, @PathVariable Long limit){
-        return Result.ok(parkingShareService.queryListByDistance(longitude, latitude, limit));
+        return Result.ok(parkingShareService.queryListByDistance(SecurityConfig.getLoginId(), longitude, latitude, limit));
     }
 }

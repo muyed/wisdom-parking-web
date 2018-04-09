@@ -23,5 +23,5 @@ public interface ParkingShareService {
     /**
      * 根据指定经纬度查询距离最近的共享单
      */
-    List<ParkingShare> queryListByDistance(BigDecimal longitude, BigDecimal latitude, Long limit);
+    List<ParkingShare> queryListByDistance(Long userId, BigDecimal longitude, BigDecimal latitude, Long limit);
 }
