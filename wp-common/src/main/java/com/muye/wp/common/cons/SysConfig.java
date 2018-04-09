@@ -8,4 +8,6 @@ import java.math.BigDecimal;
 public class SysConfig {
 
     public static final BigDecimal CARPORT_DEPOSIT = new BigDecimal("0.01");
+
+    public static final BigDecimal ACCOUNT_CASH = new BigDecimal("0.01");
 }

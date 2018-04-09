@@ -75,7 +75,7 @@ public class ParkingShareServiceImpl implements ParkingShareService{
         share.setLongitude(carport.getLongitude());
         share.setStatus(ParkingShareStatus.MATCH.getStatus());
 
-        share.setShareNum(CommonUtil.genPayNum(ProductType.PARKING_COST));
+        share.setShareNum(CommonUtil.genPayNum(ProductType.PARKING_SHARE));
 
         parkingShareMapper.insert(share);
     }

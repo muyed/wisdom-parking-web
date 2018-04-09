@@ -2,9 +2,12 @@ package com.muye.wp.service.impl;
 
 import com.muye.wp.dao.domain.CapitalFlow;
 import com.muye.wp.dao.mapper.CapitalFlowMapper;
+import com.muye.wp.dao.page.Page;
 import com.muye.wp.service.CapitalFlowService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Created by muye on 18/3/30.
@@ -14,6 +17,11 @@ public class CapitalFlowServiceImpl implements CapitalFlowService {
 
     @Autowired(required = false)
     private CapitalFlowMapper capitalFlowMapper;
+
+    @Override
+    public List<CapitalFlow> queryListByCondition(CapitalFlow query, Page page) {
+        return capitalFlowMapper.selectListByCondition(query, page);
+    }
 
     @Override
     public void add(CapitalFlow flow) {

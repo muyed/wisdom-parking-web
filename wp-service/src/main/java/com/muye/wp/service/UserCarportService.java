@@ -20,7 +20,7 @@ public interface UserCarportService {
     void update(UserCarport userCarport);
 
     /**
-     * 用户绑定车位 返回payNum
+     * 用户绑定车位 返回支付单信息
      */
     String bind(UserCarportExt userCarport);
 

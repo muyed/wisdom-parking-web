@@ -101,7 +101,7 @@ public class LoginController {
 
         user.setType(1);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        userService.insert(user);
+        userService.reg(user);
         return Result.ok(null);
     }
 }

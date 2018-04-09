@@ -1,10 +1,7 @@
 package com.muye.wp.dao.mapper;
 
 import com.muye.wp.dao.domain.User;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 /**
  * Created by muye on 18/1/25.
@@ -30,6 +27,7 @@ public interface UserMapper {
             "#{user.type}," +
             "#{user.realName}," +
             "#{user.identityCard})")
+    @SelectKey(statement = "SELECT LAST_INSERT_ID()", keyColumn = "id", keyProperty = "user.id", resultType = Long.class, before = false)
     int insert(@Param("user") User user);
 
     @Update("update user set " +

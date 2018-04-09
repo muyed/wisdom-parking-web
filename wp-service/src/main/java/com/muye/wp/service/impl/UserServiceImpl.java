@@ -3,8 +3,10 @@ package com.muye.wp.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.muye.wp.common.cons.RespStatus;
 import com.muye.wp.common.exception.WPException;
+import com.muye.wp.dao.domain.Account;
 import com.muye.wp.dao.domain.User;
 import com.muye.wp.dao.mapper.UserMapper;
+import com.muye.wp.service.AccountService;
 import com.muye.wp.service.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -18,6 +20,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.util.Map;
 
@@ -27,8 +30,11 @@ import java.util.Map;
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
+    @Autowired(required = false)
     private UserMapper userMapper;
+
+    @Autowired
+    private AccountService accountService;
 
     @Value("${idcard.app_code}")
     private String appCode;
@@ -67,6 +73,18 @@ public class UserServiceImpl implements UserService {
     @Override
     public int update(User user) {
         return userMapper.update(user);
+    }
+
+    @Override
+    @Transactional
+    public void reg(User user) {
+        insert(user);
+
+        Account account = new Account();
+        account.setUserId(user.getId());
+        account.setBalance(BigDecimal.ZERO);
+        account.setCash(BigDecimal.ZERO);
+        accountService.add(account);
     }
 
     @Override
