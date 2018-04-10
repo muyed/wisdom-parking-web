@@ -34,6 +34,8 @@ public class ParkingTicket extends BaseDomain {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date payDeadlineTime;       //支付截止时间
 
+    private String carLicense;          //停车车牌号
+    private String phone;               //停车单联系号码
     private BigDecimal price;           //每小时价格
     private BigDecimal parkingFee;      //停车费用
     private Integer overdue;            //逾期时长（小时）

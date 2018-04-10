@@ -2,10 +2,7 @@ package com.muye.wp.dao.mapper;
 
 import com.muye.wp.dao.domain.ParkingShare;
 import com.muye.wp.dao.page.Page;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -23,6 +20,7 @@ public interface ParkingShareMapper {
             "<if test='query.shareNum != null'>and share_num = #{query.shareNum}</if>" +
             "<if test='query.userId != null'>and user_id = #{query.userId}</if>" +
             "<if test='query.carportId != null'>and carport_id = #{query.carportId}</if>" +
+            "<if test='query.parkingTicketId != null'>and parking_ticket_id = #{query.parkingTicketId}</if>" +
             "<if test='query.startTime != null'>and start_time = #{query.startTime}</if>" +
             "<if test='query.stopTime != null'>and stop_time = #{query.stopTime}</if>" +
             "<if test='query.price != null'>and price = #{query.price}</if>" +
@@ -51,11 +49,12 @@ public interface ParkingShareMapper {
             "</script>")
     List<ParkingShare> selectListByCondition(@Param("query") ParkingShare query, Page page);
 
-    @Insert("insert into parking_share (share_num, user_id, carport_id, start_time, stop_time, price, status, " +
+    @Insert("insert into parking_share (share_num, user_id, carport_id, parking_ticket_id, start_time, stop_time, price, status, " +
             "carport_meid, carport_Num,community_id, community_type, province, city, area, longitude, latitude) values (" +
             "#{share.shareNum}," +
             "#{share.userId}," +
             "#{share.carportId}," +
+            "#{share.parkingTicketId}," +
             "#{share.startTime}," +
             "#{share.stopTime}," +
             "#{share.price}," +
@@ -69,6 +68,7 @@ public interface ParkingShareMapper {
             "#{share.area}," +
             "#{share.longitude}," +
             "#{share.latitude})")
+    @SelectKey(statement = "SELECT LAST_INSERT_ID()", keyColumn = "id", keyProperty = "share.id", resultType = Long.class, before = false)
     int insert(@Param("share") ParkingShare share);
 
     @Select("<script>" +
@@ -93,6 +93,7 @@ public interface ParkingShareMapper {
             "share_num = #{share.shareNum}," +
             "user_id = #{share.userId}," +
             "carport_id = #{share.carportId}," +
+            "parking_ticket_id = #{share.parkingTicketId}," +
             "start_time = #{share.startTime}," +
             "stop_time = #{share.stopTime}," +
             "price = #{share.price}," +

@@ -35,7 +35,7 @@ public class SignUtil {
 
     private static final String version = "version=1.0";
 
-    public static String sign(String appId, String privateKey, CapitalFlow flow){
+    public static String sign(String appId, String privateKey, CapitalFlow flow, Integer timeoutExpress){
 
         String sign;
         appId = "app_id=" + appId;
@@ -49,7 +49,7 @@ public class SignUtil {
         jsonObject.put("body", ProductType.ofType(flow.getType()).getName());
         jsonObject.put("subject", ProductType.ofType(flow.getType()).getName());
         jsonObject.put("out_trade_no", flow.getOrderNum());
-        jsonObject.put("timeout_express", "30m");
+        jsonObject.put("timeout_express", timeoutExpress + "m");
         jsonObject.put("total_amount", df.format(flow.getAmount()));
         jsonObject.put("product_code", "QUICK_MSECURITY_PAY");
         String bizContent = "biz_content=" + jsonObject.toJSONString();

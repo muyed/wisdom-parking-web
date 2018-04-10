@@ -41,6 +41,16 @@ public class ParkingShareServiceImpl implements ParkingShareService{
     private UserCommunityService userCommunityService;
 
     @Override
+    public ParkingShare queryByIdForUpdate(Long id) {
+        return parkingShareMapper.selectByIdForUpdate(id);
+    }
+
+    @Override
+    public void update(ParkingShare share) {
+        parkingShareMapper.update(share);
+    }
+
+    @Override
     public boolean isExistByCarportAndTime(Long carportId, Date time) {
         ParkingShare query = new ParkingShare();
         query.setCarportId(carportId);
@@ -90,7 +100,7 @@ public class ParkingShareServiceImpl implements ParkingShareService{
     @Override
     @Transactional
     public void unPublish(Long userId, Long id) {
-        ParkingShare share = parkingShareMapper.selectByIdForUpdate(id);
+        ParkingShare share = queryByIdForUpdate(id);
 
         if (share == null)
             throw new WPException(RespStatus.RESOURCE_NOT_EXIST);
@@ -102,7 +112,7 @@ public class ParkingShareServiceImpl implements ParkingShareService{
             throw new WPException(RespStatus.BUSINESS_ERR, "只支持取消待匹配的共享单");
 
         share.setStatus(ParkingShareStatus.CANCEL.getStatus());
-        parkingShareMapper.update(share);
+        update(share);
     }
 
     @Override

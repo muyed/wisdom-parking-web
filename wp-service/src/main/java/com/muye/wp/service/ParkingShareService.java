@@ -11,6 +11,10 @@ import java.util.List;
  */
 public interface ParkingShareService {
 
+    ParkingShare queryByIdForUpdate(Long id);
+
+    void update(ParkingShare share);
+
     void publish(ParkingShare share);
 
     void unPublish(Long userId, Long id);
