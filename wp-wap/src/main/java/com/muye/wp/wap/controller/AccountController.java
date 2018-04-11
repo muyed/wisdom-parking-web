@@ -1,5 +1,6 @@
 package com.muye.wp.wap.controller;
 
+import com.muye.wp.common.cons.UserType;
 import com.muye.wp.common.rest.Result;
 import com.muye.wp.service.AccountService;
 import com.muye.wp.wap.security.Auth;
@@ -19,7 +20,7 @@ public class AccountController {
     @Autowired
     private AccountService accountService;
 
-    @Auth
+    @Auth(value = UserType.GENERAL, cret = true)
     @GetMapping("/payCash")
     public Result<String> payCash(){
         return Result.ok(accountService.payCash(SecurityConfig.getLoginId()));

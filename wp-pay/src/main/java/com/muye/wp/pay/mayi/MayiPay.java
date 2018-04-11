@@ -1,6 +1,5 @@
 package com.muye.wp.pay.mayi;
 
-import com.muye.wp.common.cons.CapitalFlowDirection;
 import com.muye.wp.common.cons.CapitalFlowStatus;
 import com.muye.wp.common.cons.ProductType;
 import com.muye.wp.common.cons.RespStatus;
@@ -55,17 +54,14 @@ public class MayiPay {
             throw new WPException(RespStatus.RESOURCE_NOT_EXIST);
         }
 
-        if (capitalFlow.getDirection() != CapitalFlowDirection.OUT.getDirection()){
-            throw new WPException(RespStatus.PAY_GEN_INFO_FAIL, "流水单类型不是支出型");
-        }
-        if (capitalFlow.getStatus() != CapitalFlowStatus.ING.getStatus()){
+        if (!capitalFlow.getStatus().equals(CapitalFlowStatus.ING.getStatus())){
             throw new WPException(RespStatus.PAY_GEN_INFO_FAIL, "订单已过期");
         }
 
         //停车单需设置过期时间
         if (capitalFlow.getType().equals(ProductType.PARKING_TICKET.getType())){
             ParkingTicket ticket = parkingTicketService.queryByTicketNum(orderNum);
-            timeoutExpress = DateUtil.betweenMin(ticket.getPayDeadlineTime(), new Date());
+            timeoutExpress = DateUtil.betweenMin(ticket.getPayDeadlineTime(), new Date()) * -1;
             if (timeoutExpress < 0)
                 throw new WPException(RespStatus.PAY_GEN_INFO_FAIL, "订单已过期");
             if (timeoutExpress == 0)

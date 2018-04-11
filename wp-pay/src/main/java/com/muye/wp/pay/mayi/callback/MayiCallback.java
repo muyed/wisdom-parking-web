@@ -35,6 +35,7 @@ public interface MayiCallback {
         switch (type){
             case CARPORT_DEPOSIT: return SpringUtil.getBean("carportCallback", clazz);
             case ACCOUNT_DEPOSIT: return SpringUtil.getBean("accountCashCallback", clazz);
+            case PARKING_TICKET: return SpringUtil.getBean("ticketPayCallback", clazz);
             default: throw new WPException(RespStatus.PAY_CALLBACK_FAIL, "没有对应找到回调器");
         }
     }

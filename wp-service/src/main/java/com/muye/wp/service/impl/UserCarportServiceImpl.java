@@ -89,14 +89,8 @@ public class UserCarportServiceImpl implements UserCarportService {
         userCarport.setDeposit(SysConfig.CARPORT_DEPOSIT);
         userCarportMapper.insert(userCarport);
 
-        CapitalFlow capitalFlow = new CapitalFlow();
-        capitalFlow.setUserId(userCarport.getUserId());
-        capitalFlow.setDirection(CapitalFlowDirection.OUT.getDirection());
-        capitalFlow.setType(ProductType.CARPORT_DEPOSIT.getType());
-        capitalFlow.setOrderNum(userCarport.getPayNum());
-        capitalFlow.setAmount(userCarport.getDeposit());
-        capitalFlow.setStatus(CapitalFlowStatus.ING.getStatus());
-        capitalFlowService.add(capitalFlow);
+        capitalFlowService.add(userCarport.getUserId(), CapitalFlowDirection.OUT, ProductType.CARPORT_DEPOSIT,
+                userCarport.getPayNum(), userCarport.getDeposit());
 
         return userCarport.getPayNum();
     }

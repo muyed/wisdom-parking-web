@@ -7,10 +7,7 @@ import com.muye.wp.service.ParkingTicketService;
 import com.muye.wp.wap.security.Auth;
 import com.muye.wp.wap.security.SecurityConfig;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Created by muye on 18/4/9.
@@ -28,5 +25,11 @@ public class ParkingTicketController {
         ticket.setUserId(SecurityConfig.getLoginId());
         parkingTicketService.matching(ticket);
         return Result.ok();
+    }
+
+    @Auth(UserType.GENERAL)
+    @GetMapping("/pay/{id}")
+    public Result<String> pay(@PathVariable Long id){
+        return Result.ok(parkingTicketService.pay(SecurityConfig.getLoginId(), id));
     }
 }

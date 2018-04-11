@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication(scanBasePackages = {
         "com.muye.wp.wap",
         "com.muye.wp.service",
+        "com.muye.wp.listener",
         "com.muye.wp.dao",
         "com.muye.wp.common",
         "com.muye.wp.pay"})

@@ -8,10 +8,9 @@ import com.muye.wp.dao.domain.ParkingShare;
 import com.muye.wp.dao.domain.ParkingTicket;
 import com.muye.wp.dao.domain.UserCommunity;
 import com.muye.wp.dao.mapper.ParkingTicketMapper;
-import com.muye.wp.service.ParkingShareService;
-import com.muye.wp.service.ParkingTicketService;
-import com.muye.wp.service.UserCommunityService;
-import com.muye.wp.service.UserService;
+import com.muye.wp.dao.page.Page;
+import com.muye.wp.service.*;
+import com.muye.wp.listener.TicketPayListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,9 +39,23 @@ public class ParkingTicketServiceImpl implements ParkingTicketService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private AccountService accountService;
+
+    @Autowired
+    private TicketPayListener ticketPayListener;
+
+    @Autowired
+    private CapitalFlowService capitalFlowService;
+
     @Override
     public void add(ParkingTicket ticket) {
         parkingTicketMapper.insert(ticket);
+    }
+
+    @Override
+    public ParkingTicket queryByIdForUpdate(Long id) {
+        return parkingTicketMapper.selectByIdForUpdate(id);
     }
 
     @Override
@@ -51,19 +64,33 @@ public class ParkingTicketServiceImpl implements ParkingTicketService {
     }
 
     @Override
+    public ParkingTicket queryByTicketNumForUpdate(String ticketNum) {
+        return parkingTicketMapper.selectByTicketNumForUpdate(ticketNum);
+    }
+
+    @Override
+    public List<ParkingTicket> queryListByCondition(ParkingTicket query, Page page) {
+        return parkingTicketMapper.selectListByCondition(query, page);
+    }
+
+    @Override
+    public void update(ParkingTicket ticket) {
+        parkingTicketMapper.update(ticket);
+    }
+
+    @Override
     @Transactional
     public void matching(ParkingTicket ticket) {
 
-        ParkingShare share = parkingShareService.queryByIdForUpdate(ticket.getParkingShareId());
-        if (share == null)
-            throw new WPException(RespStatus.RESOURCE_NOT_EXIST);
+        if (!accountService.isPaidCash(ticket.getUserId()))
+            throw new WPException(RespStatus.BUSINESS_ERR, "您还没有支付账户押金");
 
+        ParkingShare share = parkingShareService.queryByIdForUpdate(ticket.getParkingShareId());
+        if (share == null) throw new WPException(RespStatus.RESOURCE_NOT_EXIST);
         if (share.getStatus() != ParkingShareStatus.MATCH.getStatus())
             throw new WPException(RespStatus.BUSINESS_ERR, "该共享单已经被匹配了");
-
         if (ticket.getAppointmentStartTime().before(share.getStartTime()))
             throw new WPException(RespStatus.BUSINESS_ERR, "停车单开始时间必须在共享单开始时间之后");
-
         if (ticket.getAppointmentEndTime().after(share.getStopTime()))
             throw new WPException(RespStatus.BUSINESS_ERR, "停车单结束时间必须在共享单结束时间之前");
 
@@ -102,5 +129,44 @@ public class ParkingTicketServiceImpl implements ParkingTicketService {
         share.setParkingTicketId(ticket.getId());
         share.setStatus(ParkingShareStatus.UNPAID.getStatus());
         parkingShareService.update(share);
+
+        //监听支付
+        ticketPayListener.listen(ticket);
+    }
+
+    @Override
+    @Transactional
+    public void cancel(String ticketNum) {
+        ParkingTicket ticket = queryByTicketNumForUpdate(ticketNum);
+        if (ticket == null)
+            throw new WPException(RespStatus.RESOURCE_NOT_EXIST);
+        if (!ticket.getStatus().equals(ParkingTicketStatus.UNPAID.getStatus()))
+            throw new WPException(RespStatus.BUSINESS_ERR, "只能取消待支付中的停车单");
+
+        ParkingShare share = parkingShareService.queryByIdForUpdate(ticket.getParkingShareId());
+
+        share.setStatus(ParkingShareStatus.MATCH.getStatus());
+        share.setParkingTicketId(null);
+
+        ticket.setStatus(ParkingTicketStatus.CANCEL.getStatus());
+
+        update(ticket);
+        parkingShareService.update(share);
+    }
+
+    @Override
+    public String pay(Long userId, Long id) {
+        ParkingTicket ticket = queryByIdForUpdate(id);
+        if (ticket == null || !ticket.getUserId().equals(userId))
+            throw new WPException(RespStatus.RESOURCE_NOT_EXIST);
+
+        if (!ticket.getStatus().equals(ParkingTicketStatus.UNPAID.getStatus()))
+            throw new WPException(RespStatus.BUSINESS_ERR, "该停车单状态不是待支付");
+
+        if (capitalFlowService.queryByOrderNum(ticket.getTicketNum()) == null){
+            capitalFlowService.add(userId, CapitalFlowDirection.OUT, ProductType.PARKING_TICKET, ticket.getTicketNum(), ticket.getParkingFee());
+        }
+
+        return ticket.getTicketNum();
     }
 }

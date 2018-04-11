@@ -69,15 +69,9 @@ public class AccountServiceImpl implements AccountService {
         if (!CollectionUtils.isEmpty(flowList))
             return flowList.get(0).getOrderNum();
 
-        CapitalFlow flow = new CapitalFlow();
-        flow.setUserId(userId);
-        flow.setDirection(CapitalFlowDirection.IN.getDirection());
-        flow.setType(ProductType.ACCOUNT_DEPOSIT.getType());
-        flow.setOrderNum(CommonUtil.genPayNum(ProductType.ACCOUNT_DEPOSIT));
-        flow.setAmount(SysConfig.ACCOUNT_CASH);
-        flow.setStatus(CapitalFlowStatus.ING.getStatus());
-        capitalFlowService.add(flow);
+        String orderNum = CommonUtil.genPayNum(ProductType.ACCOUNT_DEPOSIT);
+        capitalFlowService.add(userId, CapitalFlowDirection.IN, ProductType.ACCOUNT_DEPOSIT, orderNum, SysConfig.ACCOUNT_CASH);
 
-        return flow.getOrderNum();
+        return orderNum;
     }
 }
