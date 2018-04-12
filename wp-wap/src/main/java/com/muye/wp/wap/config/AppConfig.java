@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Bean;
         "com.muye.wp.listener",
         "com.muye.wp.dao",
         "com.muye.wp.common",
+        "com.muye.wp.embed",
         "com.muye.wp.pay"})
 public class AppConfig {
 

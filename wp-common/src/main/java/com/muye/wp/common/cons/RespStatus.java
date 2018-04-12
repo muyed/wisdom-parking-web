@@ -22,8 +22,9 @@ public enum RespStatus {
     AUTH_ERR(20, "权限异常,请联系开发"),
     AUTH_NOT(21, "没有权限"),
     AUTH_IDCARD_ERR(22, "实名认证时发生错误"),
-    AUTH_IDCARD_NOT(23, "您没有进行实名认证"),
-    AUTH_CARPORT_FAIL(24, "认证车位失败"),
+    AUTH_IDCARD_FAIL(23, "实名认证失败"),
+    AUTH_IDCARD_NOT(24, "您没有进行实名认证"),
+    AUTH_CARPORT_FAIL(25, "认证车位失败"),
 
     EMBED_SERVER_ERR(800, "embed服务端发生错误"),
     ;

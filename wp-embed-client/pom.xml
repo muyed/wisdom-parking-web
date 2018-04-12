@@ -11,6 +11,13 @@
 
     <artifactId>wp-embed-client</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+    </dependencies>
+
     <build>
         <finalName>wp-embed-client</finalName>
         <plugins>
@@ -21,7 +28,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.muye.wp.embed.client.entry.Entry</mainClass>
+                            <mainClass>com.muye.wp.embed.client.bootstrap.Bootstrap</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
