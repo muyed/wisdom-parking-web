@@ -93,7 +93,7 @@ public class UserServiceImpl implements UserService {
 
         User user = queryByIdForUpdate(userId);
         if (StringUtils.isNotEmpty(user.getIdentityCard()))
-            return true;
+            throw new WPException(RespStatus.BUSINESS_ERR, "已经实名认证过了");
 
         try {
             CloseableHttpClient httpClient = HttpClients.createDefault();
@@ -119,7 +119,7 @@ public class UserServiceImpl implements UserService {
                 userMapper.update(user);
                 return true;
             }
-            return false;
+            throw new WPException(RespStatus.AUTH_IDCARD_FAIL);
         }catch (Exception e){
             throw new WPException(RespStatus.AUTH_IDCARD_ERR, e);
         }
