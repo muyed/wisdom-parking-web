@@ -89,7 +89,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public boolean idcardAuth(Long userId, String realName, String idcard) {
+    public void idcardAuth(Long userId, String realName, String idcard) {
 
         User user = queryByIdForUpdate(userId);
         if (StringUtils.isNotEmpty(user.getIdentityCard()))
@@ -117,7 +117,6 @@ public class UserServiceImpl implements UserService {
                 user.setIdentityCard(idcard);
                 user.setRealName(realName);
                 userMapper.update(user);
-                return true;
             }
             throw new WPException(RespStatus.AUTH_IDCARD_FAIL);
         }catch (Exception e){

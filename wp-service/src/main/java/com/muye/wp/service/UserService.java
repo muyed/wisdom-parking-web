@@ -21,7 +21,7 @@ public interface UserService {
 
     void reg(User user);
 
-    boolean idcardAuth(Long userId, String realName, String idcard);
+    void idcardAuth(Long userId, String realName, String idcard);
 
     boolean isAuth(Long userId);
 }
