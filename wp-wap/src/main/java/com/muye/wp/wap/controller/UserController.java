@@ -23,6 +23,7 @@ public class UserController {
     @PostMapping("/idCardAuth")
     public Result<Boolean> idCardAuth(@RequestBody User user){
         Long userId = SecurityConfig.getLoginId();
-        return Result.ok(userService.idcardAuth(userId, user.getRealName(), user.getIdentityCard()));
+        userService.idcardAuth(userId, user.getRealName(), user.getIdentityCard());
+        return Result.ok();
     }
 }
