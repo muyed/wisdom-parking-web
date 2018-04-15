@@ -21,4 +21,10 @@ public interface CarLicenseMapper {
 
     @Delete("delete from car_license where id = #{id} and user_id = #{userId}")
     int delete(@Param("id") Long id, @Param("userId") Long userId);
+
+    //查找某个小区的所有车牌
+    @Select("select * from car_license where user_id in (" +
+            "   select user_id from user_community where community_id = #{communityId} and type = 2" +
+            ")")
+    List<CarLicense> selectListByCommunityId(@Param("communityId") Long communityId);
 }

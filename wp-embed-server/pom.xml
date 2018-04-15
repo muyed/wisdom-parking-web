@@ -14,13 +14,13 @@
     <dependencies>
         <dependency>
             <groupId>com.muye</groupId>
-            <artifactId>wp-common</artifactId>
+            <artifactId>wp-embed-client</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>com.muye</groupId>
-            <artifactId>wp-embed-client</artifactId>
+            <artifactId>wp-dao</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>

@@ -1,5 +1,8 @@
 package com.muye.wp.embed.protocol;
 
+import java.util.Optional;
+import java.util.stream.Stream;
+
 /**
  * Created by muye on 18/4/12.
  *
@@ -22,5 +25,13 @@ public enum ProtoMethod {
 
     public byte getMethod() {
         return method;
+    }
+
+    public static ProtoMethod ofMethod(byte method){
+        Optional<ProtoMethod> optional = Stream.of(ProtoMethod.values())
+                .filter(protoMethod -> protoMethod.method == method)
+                .findFirst();
+        if (optional.isPresent()) return optional.get();
+        return null;
     }
 }

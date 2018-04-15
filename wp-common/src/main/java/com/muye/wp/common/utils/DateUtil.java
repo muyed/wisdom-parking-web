@@ -1,5 +1,6 @@
 package com.muye.wp.common.utils;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -26,5 +27,10 @@ public class DateUtil {
         LocalDateTime dateTime1 = before.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
         LocalDateTime dateTime2 = after.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
         return (int) ChronoUnit.MINUTES.between(dateTime1, dateTime2);
+    }
+
+    public static String format(Date date, String format){
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        return sdf.format(date);
     }
 }

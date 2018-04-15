@@ -17,7 +17,8 @@ public class TempCarLicense implements Serializable {
 
     private String carLicense;      //车牌号
 
-    private Date start;             //有效期开始时间
+    private int start;             //有效期开始时间 yyyyMMddHHmm
 
-    private Date end;               //有效期终止时间
+    private int end;               //有效期终止时间 yyyyMMddHHmm
+
 }

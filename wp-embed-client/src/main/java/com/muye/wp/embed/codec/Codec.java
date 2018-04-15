@@ -1,7 +1,8 @@
 package com.muye.wp.embed.codec;
 
-import com.muye.wp.embed.protocol.Head;
 import com.muye.wp.embed.protocol.Proto;
+import com.muye.wp.embed.protocol.ProtoMethod;
+import com.muye.wp.embed.protocol.ProtoType;
 
 import java.io.*;
 import java.util.List;
@@ -14,27 +15,33 @@ public class Codec {
     public static Proto decode(InputStream in) throws IOException, ClassNotFoundException{
 
         synchronized (in){
-            ObjectInputStream headOis = null;
-            ObjectInputStream bodyOis = null;
+            ObjectInputStream ois = null;
 
             try {
-                byte[] bytes = new byte[15];
-                in.read(bytes);
-                headOis = new ObjectInputStream(new ByteArrayInputStream(bytes));
-                Head head = (Head) headOis.readObject();
+                Proto proto = new Proto();
 
-                bytes = new byte[head.getSize()];
-                bodyOis = new ObjectInputStream(new ByteArrayInputStream(bytes));
-                List<Object> body = (List<Object>) bodyOis.readObject();
+                byte[] head = new byte[15];
+                in.read(head);
 
-                return new Proto(head, body);
+                proto.setVersion(head[0]);
+                proto.setAskId(ByteUtil.BytesToLong(head, 1));
+                proto.setType(ProtoType.ofType(head[9]));
+                proto.setMethod(ProtoMethod.ofMethod(head[10]));
+                proto.setSize(ByteUtil.bytesToInt(head, 11));
+
+                byte[] body = new byte[proto.getSize()];
+                in.read(body);
+
+                try {
+                    ois = new ObjectInputStream(new ByteArrayInputStream(body));
+                    proto.setBody((List<Object>) ois.readObject());
+                }catch (EOFException e){
+                }
+
+                return proto;
             }finally {
                 try {
-                    if (headOis != null) headOis.close();
-                }catch (Exception e){
-                }
-                try {
-                    if (bodyOis != null) bodyOis.close();
+                    if (ois != null) ois.close();
                 }catch (Exception e){
                 }
             }
@@ -43,33 +50,38 @@ public class Codec {
 
     public static byte[] encode(Proto proto) throws IOException{
 
-        ObjectOutputStream headOos = null;
-        ObjectOutputStream bodyOos = null;
+        ByteArrayOutputStream bos = null;
+        ObjectOutputStream oos = null;
 
         try {
-            ByteArrayOutputStream headBos = new ByteArrayOutputStream();
-            ByteArrayOutputStream bodyBos = new ByteArrayOutputStream();
+            //head
+            byte[] head = new byte[15];
+            head[0] = proto.getVersion();
+            System.arraycopy(ByteUtil.LongToBytes(proto.getAskId()), 0, head, 1, 8);
+            head[9] = proto.getType().getType();
+            head[10] = proto.getMethod().getMethod();
 
-            headOos = new ObjectOutputStream(headBos);
-            bodyOos = new ObjectOutputStream(bodyBos);
+            //body
+            bos = new ByteArrayOutputStream();
+            oos = new ObjectOutputStream(bos);
+            oos.writeObject(proto.getBody());
+            byte[] body = bos.toByteArray();
+            proto.setSize(body.length);
 
-            headOos.writeObject(proto.getHead());
-            bodyOos.writeObject(proto.getBody());
+            System.arraycopy(ByteUtil.intToBytes(proto.getSize()), 0, head, 11, 4);
 
-            byte[] headBytes = headBos.toByteArray();
-            byte[] bodyBytes = bodyBos.toByteArray();
+            byte[] bytes = new byte[15 + body.length];
+            System.arraycopy(head, 0, bytes, 0, 15);
+            System.arraycopy(body, 0, bytes, 15, body.length);
 
-            byte[] bytes = new byte[headBytes.length + bodyBytes.length];
-            System.arraycopy(headBytes, 0, bytes, 0, headBytes.length);
-            System.arraycopy(bodyBytes, 0, bytes, headBytes.length, bodyBytes.length);
             return bytes;
         }finally {
             try {
-                if (headOos != null) headOos.close();
+                if (oos != null) oos.close();
             }catch (Exception e){
             }
             try {
-                if (bodyOos != null) bodyOos.close();
+                if (bos != null) bos.close();
             }catch (Exception e){
             }
         }
