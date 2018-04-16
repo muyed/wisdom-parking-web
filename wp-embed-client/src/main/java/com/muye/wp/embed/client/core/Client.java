@@ -31,6 +31,16 @@ public class Client {
         out = socket.getOutputStream();
     }
 
+    public void clean(){
+        if (socket != null){
+            try {
+                socket.close();
+            }catch (Exception e){
+            }
+            socket = null;
+        }
+    }
+
     public static synchronized Client instance() throws Exception{
         if (client == null){
             InputStream in = new FileInputStream(new File("/usr/local/wp/wp-embed-client/config/application.properties"));

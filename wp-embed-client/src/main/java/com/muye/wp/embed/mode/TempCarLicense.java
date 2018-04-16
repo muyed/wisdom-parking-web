@@ -21,4 +21,13 @@ public class TempCarLicense implements Serializable {
 
     private int end;               //有效期终止时间 yyyyMMddHHmm
 
+    @Override
+    public String toString() {
+        return "TempCarLicense{" +
+                "id=" + id +
+                ", carLicense='" + carLicense + '\'' +
+                ", start=" + start +
+                ", end=" + end +
+                '}';
+    }
 }

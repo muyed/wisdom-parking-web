@@ -38,7 +38,7 @@ public class Invoke {
             }
         });
 
-        List<Proto> respList = getResult().get(10, TimeUnit.MINUTES);
+        List<Proto> respList = getResult().get(10, TimeUnit.SECONDS);
         List<Object> result = new ArrayList<>(respList.size());
         respList.forEach(proto -> result.add(proto.getBody().get(0)));
         return result;

@@ -13,6 +13,12 @@ import java.util.List;
  */
 public interface CarLicenseMapper {
 
+    @Select("select * from car_license where id = #{id}")
+    CarLicense selectById(@Param("id") Long id);
+
+    @Select("select * from car_license where user_id = #{userId} and license = #{license}")
+    CarLicense selectByUserIdAndLicense(@Param("userId") Long userId, @Param("license") String license);
+
     @Select("select * from car_license where user_id = #{userId}")
     List<CarLicense> selectListByUserId(@Param("userId") Long userId);
 

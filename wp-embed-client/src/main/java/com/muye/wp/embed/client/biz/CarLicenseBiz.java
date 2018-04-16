@@ -2,9 +2,7 @@ package com.muye.wp.embed.client.biz;
 
 import com.muye.wp.embed.mode.TempCarLicense;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by muye on 18/4/13.
@@ -20,19 +18,29 @@ public class CarLicenseBiz {
 
         this.carLicenseList.addAll(carLicenseList);
         this.tempLicenseList.addAll(tempList);
+
+        echo();
         return true;
     }
 
-    public boolean addCarLicense(String carLicense){
-        return carLicenseList.add(carLicense);
+    public boolean addCarLicense(List<String> carLicenseList){
+        boolean result = this.carLicenseList.addAll(carLicenseList);
+        echo();
+        return result;
     }
 
     public boolean addTemp(TempCarLicense temp){
-        return tempLicenseList.add(temp);
+
+        boolean result = tempLicenseList.add(temp);
+        echo();
+        return result;
     }
 
-    public boolean delCarLicense(String carLicense){
-        return carLicenseList.remove(carLicense);
+    public boolean delCarLicense(List<String> carLicenseList){
+
+        carLicenseList.forEach(this.carLicenseList::remove);
+        echo();
+        return true;
     }
 
     public boolean delTemp(Long tempId){
@@ -40,6 +48,13 @@ public class CarLicenseBiz {
                 .filter(temp -> temp.getId().equals(tempId))
                 .findFirst()
                 .ifPresent(tempLicenseList::remove);
+
+        echo();
         return true;
+    }
+
+    private void echo() {
+        System.out.println("当前数据: 业主车牌 ->" + String.join(",", this.carLicenseList));
+        System.out.println(this.tempLicenseList.stream().map(t -> t.toString()).reduce("当前数据: 临时车牌 ->", (a, b) -> a + "\n" + b));
     }
 }

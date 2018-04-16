@@ -17,28 +17,36 @@ public class Manage {
     private Router router = new Router();
 
     public void start() throws Exception{
-        client = Client.instance();
-        client.start();
+        try {
+            client = Client.instance();
+            client.clean();
+            client.start();
 
-        reg();
+            reg();
 
-        while(true) {
-            Proto proto = Codec.decode(client.in);
+            while(true) {
+                Proto proto = Codec.decode(client.in);
 
-            //响应类型
-            if (proto.getType() == ProtoType.ANSWER){
-                System.out.println("响应---> " + proto.getBody().stream().reduce((a, b) -> a.toString() + b.toString()));
-                continue;
+                //处理响应
+                if (proto.getType() == ProtoType.ANSWER){
+                    System.out.println("响应---> " + proto.getBody().stream().reduce((a, b) -> a.toString() + b.toString()));
+                    continue;
+                }
+
+                //处理请求
+                Object resp = router.router(proto);
+                List<Object> body = new ArrayList<>();
+                body.add(resp);
+                proto.setBody(body);
+                proto.setType(ProtoType.ANSWER);
+                byte[] bytes = Codec.encode(proto);
+                client.out.write(bytes);
+                client.out.flush();
             }
-
-            //请求
-            Object resp = router.router(proto);
-            List<Object> body = new ArrayList<>();
-            body.add(resp);
-            proto.setBody(body);
-            byte[] bytes = Codec.encode(proto);
-            client.out.write(bytes);
-            client.out.flush();
+        }catch (Exception e){
+            System.out.println("断开联系 重试中");
+            Thread.sleep(10 * 1000);
+            start();
         }
     }
 

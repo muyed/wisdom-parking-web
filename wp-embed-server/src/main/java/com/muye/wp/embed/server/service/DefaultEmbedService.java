@@ -3,10 +3,8 @@ package com.muye.wp.embed.server.service;
 import com.muye.wp.common.cons.ParkingTicketStatus;
 import com.muye.wp.common.utils.DateUtil;
 import com.muye.wp.dao.domain.CarLicense;
-import com.muye.wp.dao.domain.Community;
 import com.muye.wp.dao.domain.ParkingTicket;
 import com.muye.wp.dao.mapper.CarLicenseMapper;
-import com.muye.wp.dao.mapper.CommunityMapper;
 import com.muye.wp.dao.mapper.ParkingTicketMapper;
 import com.muye.wp.embed.mode.TempCarLicense;
 import com.muye.wp.embed.protocol.Proto;
@@ -17,7 +15,6 @@ import com.muye.wp.embed.server.core.Server;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,11 +67,11 @@ public class DefaultEmbedService implements EmbedService {
     }
 
     @Override
-    public boolean addCarLicense(Long communityId, String carLicense) {
+    public boolean addCarLicense(Long communityId, List<String> carLicenseList) {
 
         Proto proto = new Proto().putType(ProtoType.ASK)
                 .putMethod(ProtoMethod.ADD)
-                .addBodyItem(carLicense);
+                .addBodyItem(carLicenseList);
 
         Invoke invoke = new Invoke(proto, Server.getClient(communityId).getSocketList());
         try {
@@ -104,11 +101,11 @@ public class DefaultEmbedService implements EmbedService {
     }
 
     @Override
-    public boolean delCarLicense(Long communityId, String carLicense) {
+    public boolean delCarLicense(Long communityId, List<String> carLicenseList) {
 
         Proto proto = new Proto().putType(ProtoType.ASK)
                 .putMethod(ProtoMethod.DEL)
-                .addBodyItem(carLicense);
+                .addBodyItem(carLicenseList);
 
         Invoke invoke = new Invoke(proto, Server.getClient(communityId).getSocketList());
         try {

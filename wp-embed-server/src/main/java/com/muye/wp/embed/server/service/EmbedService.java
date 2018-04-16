@@ -17,7 +17,7 @@ public interface EmbedService {
     /**
      * 添加业主车牌号到小区嵌入式设备内
      */
-    boolean addCarLicense(Long communityId, String carLicense);
+    boolean addCarLicense(Long communityId, List<String> carLicenseList);
 
     /**
      * 添加临时车牌号到小区嵌入式设备内
@@ -27,7 +27,7 @@ public interface EmbedService {
     /**
      * 删除业主车牌
      */
-    boolean delCarLicense(Long communityId, String carLicense);
+    boolean delCarLicense(Long communityId, List<String> carLicenseList);
 
     /**
      * 删除临时车牌

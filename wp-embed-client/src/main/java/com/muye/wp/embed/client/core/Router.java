@@ -20,11 +20,11 @@ public class Router {
                 case REFRESH:
                     return carLicenseBiz.refresh((List<String>) proto.getBody().get(0), (List<TempCarLicense>) proto.getBody().get(1));
                 case ADD:
-                    return carLicenseBiz.addCarLicense((String) proto.getBody().get(0));
+                    return carLicenseBiz.addCarLicense((List<String>) proto.getBody().get(0));
                 case ADD_TEMP:
                     return carLicenseBiz.addTemp((TempCarLicense) proto.getBody().get(0));
                 case DEL:
-                    return carLicenseBiz.delCarLicense((String) proto.getBody().get(0));
+                    return carLicenseBiz.delCarLicense((List<String>) proto.getBody().get(0));
                 case DEL_TEMP:
                     return carLicenseBiz.delTemp((Long) proto.getBody().get(0));
                 default: return "没有指定类型任务";

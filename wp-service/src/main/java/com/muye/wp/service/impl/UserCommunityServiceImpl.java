@@ -3,10 +3,13 @@ package com.muye.wp.service.impl;
 import com.muye.wp.common.cons.RespStatus;
 import com.muye.wp.common.cons.UserCommunityType;
 import com.muye.wp.common.exception.WPException;
+import com.muye.wp.dao.domain.CarLicense;
 import com.muye.wp.dao.domain.Carport;
 import com.muye.wp.dao.domain.UserCommunity;
 import com.muye.wp.dao.mapper.UserCommunityMapper;
 import com.muye.wp.dao.page.Page;
+import com.muye.wp.embed.server.service.EmbedService;
+import com.muye.wp.service.CarLicenseService;
 import com.muye.wp.service.CarportService;
 import com.muye.wp.service.CommunityService;
 import com.muye.wp.service.UserCommunityService;
@@ -14,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,6 +34,12 @@ public class UserCommunityServiceImpl implements UserCommunityService {
 
     @Autowired
     private CarportService carportService;
+
+    @Autowired
+    private CarLicenseService carLicenseService;
+
+    @Autowired
+    private EmbedService embedService;
 
     @Override
     public void userAuth(UserCommunity userCommunity) {
@@ -49,10 +59,19 @@ public class UserCommunityServiceImpl implements UserCommunityService {
 
     @Override
     public void userAudit(Long id, Integer type) {
-        UserCommunity userCommunity = new UserCommunity();
-        userCommunity.setId(id);
+        UserCommunity userCommunity = userCommunityMapper.selectByIdForUpdate(id);
         userCommunity.setType(type);
         userCommunityMapper.updateSelective(userCommunity);
+
+        List<CarLicense> carLicenseList = carLicenseService.queryListByUserId(userCommunity.getUserId());
+        List<String> carLicenseNumList = new ArrayList<>(carLicenseList.size());
+        carLicenseList.forEach(carLicense -> carLicenseNumList.add(carLicense.getLicense()));
+        if (UserCommunityType.PASS.getType().equals(type)){
+            embedService.addCarLicense(userCommunity.getCommunityId(), carLicenseNumList);
+        }else {
+            embedService.delCarLicense(userCommunity.getCommunityId(), carLicenseNumList);
+        }
+
     }
 
     @Override
