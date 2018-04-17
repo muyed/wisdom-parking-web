@@ -89,6 +89,11 @@ public class CarportServiceImpl implements CarportService {
     }
 
     @Override
+    public List<Carport> queryListByUserIdAndCommunityId(Long userId, Long communityId) {
+        return carportMapper.selectListByUserIdAndCommunityId(userId, communityId);
+    }
+
+    @Override
     public Carport queryById(Long id) {
         return carportMapper.selectById(id);
     }

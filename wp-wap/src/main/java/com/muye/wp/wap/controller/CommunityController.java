@@ -1,21 +1,18 @@
 package com.muye.wp.wap.controller;
 
+import com.alibaba.fastjson.JSONObject;
+import com.muye.wp.common.cons.UserCommunityType;
 import com.muye.wp.common.cons.UserType;
 import com.muye.wp.common.rest.Result;
-import com.muye.wp.dao.domain.Community;
-import com.muye.wp.dao.domain.CommunityModule;
-import com.muye.wp.dao.domain.User;
-import com.muye.wp.dao.domain.UserCommunity;
+import com.muye.wp.dao.domain.*;
 import com.muye.wp.dao.page.Page;
-import com.muye.wp.service.CommunityModuleService;
-import com.muye.wp.service.CommunityService;
-import com.muye.wp.service.UserCommunityService;
-import com.muye.wp.service.UserService;
+import com.muye.wp.service.*;
 import com.muye.wp.wap.security.Auth;
 import com.muye.wp.wap.security.SecurityConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -36,6 +33,9 @@ public class CommunityController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private CarportService carportService;
 
     /**
      * 添加小区
@@ -129,7 +129,7 @@ public class CommunityController {
     @PostMapping("/user/auth")
     public Result userAuth(@RequestBody UserCommunity userCommunity){
         userCommunity.setUserId(SecurityConfig.getLoginId());
-        userCommunity.setType(0);
+        userCommunity.setType(UserCommunityType.VERIFYING.getType());
         userCommunityService.userAuth(userCommunity);
         return Result.ok(null);
     }
@@ -149,7 +149,7 @@ public class CommunityController {
      */
     @Auth({UserType.GENERAL, UserType.OPERATOR, UserType.PROPERTY})
     @GetMapping("/user/list")
-    public Result<List<UserCommunity>> userList(UserCommunity query, Page page){
+    public Result<List<JSONObject>> userList(UserCommunity query, Page page){
 
         //前端用户只能查询自己的记录
         User user = userService.queryById(SecurityConfig.getLoginId());
@@ -158,6 +158,24 @@ public class CommunityController {
         }
 
         List<UserCommunity> list = userCommunityService.queryByCondition(query, page);
-        return Result.ok(list);
+
+        List<JSONObject> vo = new ArrayList<>(list.size());
+        list.forEach(userCommunity -> {
+            Community community = communityService.queryById(userCommunity.getCommunityId());
+            List<Carport> carportList = carportService.queryListByUserIdAndCommunityId(userCommunity.getUserId(), userCommunity.getCommunityId());
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("communityId", userCommunity.getCommunityId());
+            jsonObject.put("type", userCommunity.getType());
+            jsonObject.put("communityName", community.getCommunityName());
+            jsonObject.put("communityType", community.getType());
+            jsonObject.put("province", community.getProvince());
+            jsonObject.put("city", community.getCity());
+            jsonObject.put("area", community.getArea());
+            jsonObject.put("addr", community.getAddr());
+            jsonObject.put("carportList", carportList);
+            vo.add(jsonObject);
+        });
+
+        return Result.ok(vo);
     }
 }

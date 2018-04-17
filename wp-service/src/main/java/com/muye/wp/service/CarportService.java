@@ -16,6 +16,11 @@ public interface CarportService {
 
     List<Carport> queryListByCondition(Carport query, Page page);
 
+    /**
+     * 查找某个用户某个小区的所有车位
+     */
+    List<Carport> queryListByUserIdAndCommunityId(Long userId, Long communityId);
+
     Carport queryById(Long id);
 
     void update(Carport carport);

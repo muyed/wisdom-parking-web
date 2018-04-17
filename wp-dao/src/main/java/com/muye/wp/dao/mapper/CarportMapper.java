@@ -32,6 +32,13 @@ public interface CarportMapper {
             "</script>")
     List<Carport> selectListByCondition(@Param("query") Carport query, Page page);
 
+    @Select("select * from carport " +
+            "where id in (" +
+            "   select carport_id from user_carport where user_id = #{userId}" +
+            ") " +
+            "and community_id = #{communityId}")
+    List<Carport> selectListByUserIdAndCommunityId(@Param("userId") Long userId, @Param("communityId") Long communityId);
+
     @Insert("insert into carport (community_module_id, community_id, carport_num, meid, bind_code, longitude, latitude, share_status, lock_status) values (" +
             "#{carport.communityModuleId}," +
             "#{carport.communityId}," +
