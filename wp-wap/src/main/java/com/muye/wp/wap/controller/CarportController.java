@@ -69,4 +69,18 @@ public class CarportController {
         userCarportService.changeAlias(SecurityConfig.getLoginId(), userCarport.getId(), userCarport.getAlias());
         return Result.ok(null);
     }
+
+    @Auth(value = {UserType.GENERAL, UserType.OPERATOR, UserType.PROPERTY})
+    @PostMapping("/lock")
+    public Result lock(@RequestBody Carport carport){
+        carportService.lock(SecurityConfig.getLoginId(), carport.getId());
+        return Result.ok();
+    }
+
+    @Auth(value = {UserType.GENERAL, UserType.OPERATOR, UserType.PROPERTY})
+    @PostMapping("/unLock")
+    public Result unLock(@RequestBody Carport carport){
+        carportService.unLock(SecurityConfig.getLoginId(), carport.getId());
+        return Result.ok();
+    }
 }

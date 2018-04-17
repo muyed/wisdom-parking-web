@@ -1,4 +1,4 @@
-package com.muye.wp.embed.server.core;
+package com.muye.wp.embed.server.door.core;
 
 import com.muye.wp.embed.codec.Codec;
 import com.muye.wp.embed.protocol.Proto;

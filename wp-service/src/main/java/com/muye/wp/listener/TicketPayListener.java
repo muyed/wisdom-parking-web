@@ -40,7 +40,7 @@ public class TicketPayListener implements InitializingBean {
 
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() {
         //加载所有未支付的停车单  并监听
         ParkingTicket query = new ParkingTicket();
         query.setStatus(ParkingTicketStatus.UNPAID.getStatus());

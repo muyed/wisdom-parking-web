@@ -1,4 +1,4 @@
-package com.muye.wp.embed.server.service;
+package com.muye.wp.embed.server.door.service;
 
 import com.muye.wp.embed.mode.TempCarLicense;
 
@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Created by muye on 18/4/12.
  */
-public interface EmbedService {
+public interface DoorEmbedService {
 
     /**
      * 刷新小区嵌入式设备内车牌数据

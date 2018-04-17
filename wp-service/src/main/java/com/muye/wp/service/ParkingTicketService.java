@@ -30,4 +30,14 @@ public interface ParkingTicketService {
      * 支付停车单 获取支付单号
      */
     String pay(Long userId, Long id);
+
+    /**
+     * 支付停车单逾期费用 获取支付单号
+     */
+    String payOverdue(Long userId, Long id);
+
+    /**
+     * 支付停车费用至用户账户余额
+     */
+    void payToAccount(ParkingTicket ticket);
 }

@@ -1,9 +1,6 @@
 package com.muye.wp.service.impl;
 
-import com.muye.wp.common.cons.ParkingShareStatus;
-import com.muye.wp.common.cons.ProductType;
-import com.muye.wp.common.cons.RespStatus;
-import com.muye.wp.common.cons.UserCommunityType;
+import com.muye.wp.common.cons.*;
 import com.muye.wp.common.exception.WPException;
 import com.muye.wp.common.utils.CommonUtil;
 import com.muye.wp.dao.domain.*;
@@ -95,6 +92,9 @@ public class ParkingShareServiceImpl implements ParkingShareService{
         share.setShareNum(CommonUtil.genPayNum(ProductType.PARKING_SHARE));
 
         parkingShareMapper.insert(share);
+
+        carport.setShareStatus(CarportShareStatus.PUBLISH.getStatus());
+        carportService.update(carport);
     }
 
     @Override
@@ -113,6 +113,10 @@ public class ParkingShareServiceImpl implements ParkingShareService{
 
         share.setStatus(ParkingShareStatus.CANCEL.getStatus());
         update(share);
+
+        Carport carport = carportService.queryById(share.getCarportId());
+        carport.setShareStatus(CarportShareStatus.UN_PUBLISH.getStatus());
+        carportService.update(carport);
     }
 
     @Override

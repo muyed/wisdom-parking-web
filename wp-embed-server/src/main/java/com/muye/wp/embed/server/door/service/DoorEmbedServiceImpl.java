@@ -1,4 +1,4 @@
-package com.muye.wp.embed.server.service;
+package com.muye.wp.embed.server.door.service;
 
 import com.muye.wp.common.cons.ParkingTicketStatus;
 import com.muye.wp.common.utils.DateUtil;
@@ -10,8 +10,8 @@ import com.muye.wp.embed.mode.TempCarLicense;
 import com.muye.wp.embed.protocol.Proto;
 import com.muye.wp.embed.protocol.ProtoMethod;
 import com.muye.wp.embed.protocol.ProtoType;
-import com.muye.wp.embed.server.core.Invoke;
-import com.muye.wp.embed.server.core.Server;
+import com.muye.wp.embed.server.door.core.Invoke;
+import com.muye.wp.embed.server.door.core.Server;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +22,7 @@ import java.util.List;
  * Created by muye on 18/4/12.
  */
 @Component
-public class DefaultEmbedService implements EmbedService {
+public class DoorEmbedServiceImpl implements DoorEmbedService {
 
     @Autowired(required = false)
     private CarLicenseMapper carLicenseMapper;
@@ -45,8 +45,6 @@ public class DefaultEmbedService implements EmbedService {
         ticketList.forEach(ticket -> {
             TempCarLicense temp = new TempCarLicense();
             temp.setCarLicense(ticket.getCarLicense());
-            temp.setStart(Integer.valueOf(DateUtil.format(ticket.getStartTime(), "yyyyMMddHHmm")));
-            temp.setEnd(Integer.valueOf(DateUtil.format(ticket.getEndTime(), "yyyyMMddHHmm")));
             temp.setId(ticket.getId());
             tempList.add(temp);
         });
@@ -73,8 +71,8 @@ public class DefaultEmbedService implements EmbedService {
                 .putMethod(ProtoMethod.ADD)
                 .addBodyItem(carLicenseList);
 
-        Invoke invoke = new Invoke(proto, Server.getClient(communityId).getSocketList());
         try {
+            Invoke invoke = new Invoke(proto, Server.getClient(communityId).getSocketList());
             List<Object> list = invoke.invoke();
             return list.stream().anyMatch(resp -> (Boolean)resp);
         }catch (Exception e){
@@ -90,8 +88,8 @@ public class DefaultEmbedService implements EmbedService {
                 .putMethod(ProtoMethod.ADD_TEMP)
                 .addBodyItem(temp);
 
-        Invoke invoke = new Invoke(proto, Server.getClient(communityId).getSocketList());
         try {
+            Invoke invoke = new Invoke(proto, Server.getClient(communityId).getSocketList());
             List<Object> list = invoke.invoke();
             return list.stream().anyMatch(resp -> (Boolean)resp);
         }catch (Exception e){
@@ -107,8 +105,8 @@ public class DefaultEmbedService implements EmbedService {
                 .putMethod(ProtoMethod.DEL)
                 .addBodyItem(carLicenseList);
 
-        Invoke invoke = new Invoke(proto, Server.getClient(communityId).getSocketList());
         try {
+            Invoke invoke = new Invoke(proto, Server.getClient(communityId).getSocketList());
             List<Object> list = invoke.invoke();
             return list.stream().anyMatch(resp -> (Boolean)resp);
         }catch (Exception e){
@@ -124,8 +122,8 @@ public class DefaultEmbedService implements EmbedService {
                 .putMethod(ProtoMethod.DEL_TEMP)
                 .addBodyItem(tempId);
 
-        Invoke invoke = new Invoke(proto, Server.getClient(communityId).getSocketList());
         try {
+            Invoke invoke = new Invoke(proto, Server.getClient(communityId).getSocketList());
             List<Object> list = invoke.invoke();
             return list.stream().anyMatch(resp -> (Boolean)resp);
         }catch (Exception e){

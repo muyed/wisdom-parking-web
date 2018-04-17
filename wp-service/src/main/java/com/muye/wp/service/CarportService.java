@@ -17,4 +17,10 @@ public interface CarportService {
     List<Carport> queryListByCondition(Carport query, Page page);
 
     Carport queryById(Long id);
+
+    void update(Carport carport);
+
+    void lock(Long userId, Long carportId);
+
+    void unLock(Long userId, Long carportId);
 }

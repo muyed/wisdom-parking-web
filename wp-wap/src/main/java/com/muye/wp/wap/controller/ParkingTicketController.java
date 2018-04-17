@@ -32,4 +32,10 @@ public class ParkingTicketController {
     public Result<String> pay(@PathVariable Long id){
         return Result.ok(parkingTicketService.pay(SecurityConfig.getLoginId(), id));
     }
+
+    @Auth(UserType.GENERAL)
+    @GetMapping("/payOverdue/{id}")
+    public Result<String> payOverdue(@PathVariable Long id){
+        return Result.ok(parkingTicketService.payOverdue(SecurityConfig.getLoginId(), id));
+    }
 }

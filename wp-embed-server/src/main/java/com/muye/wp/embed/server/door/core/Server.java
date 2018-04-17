@@ -1,4 +1,4 @@
-package com.muye.wp.embed.server.core;
+package com.muye.wp.embed.server.door.core;
 
 import com.alibaba.fastjson.JSONObject;
 import com.muye.wp.dao.domain.Community;
@@ -7,7 +7,7 @@ import com.muye.wp.embed.codec.Codec;
 import com.muye.wp.embed.protocol.Proto;
 import com.muye.wp.embed.protocol.ProtoMethod;
 import com.muye.wp.embed.protocol.ProtoType;
-import com.muye.wp.embed.server.service.EmbedService;
+import com.muye.wp.embed.server.door.service.DoorEmbedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -41,7 +41,7 @@ public class Server implements InitializingBean {
     private CommunityMapper communityMapper;
 
     @Autowired
-    private EmbedService embedService;
+    private DoorEmbedService doorEmbedService;
 
     private int port = 5555;
     private ServerSocket server;
@@ -117,7 +117,7 @@ public class Server implements InitializingBean {
                     clientCache.put(communityId, communityClient);
                     communityClient.addClient(clientNum, socket);
 
-                    boolean result = embedService.refreshCommunityDate(communityId);
+                    boolean result = doorEmbedService.refreshCommunityDate(communityId);
                     if (result) logger.info("{}:写入小区数据成功", communityId);
                     else logger.error("{}:写入小区数据失败", communityId);
                     return;

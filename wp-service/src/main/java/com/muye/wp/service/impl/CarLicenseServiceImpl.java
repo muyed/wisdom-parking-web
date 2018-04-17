@@ -6,7 +6,7 @@ import com.muye.wp.common.exception.WPException;
 import com.muye.wp.dao.domain.CarLicense;
 import com.muye.wp.dao.domain.UserCommunity;
 import com.muye.wp.dao.mapper.CarLicenseMapper;
-import com.muye.wp.embed.server.service.EmbedService;
+import com.muye.wp.embed.server.door.service.DoorEmbedService;
 import com.muye.wp.service.CarLicenseService;
 import com.muye.wp.service.UserCommunityService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ public class CarLicenseServiceImpl implements CarLicenseService {
     private UserCommunityService userCommunityService;
 
     @Autowired
-    private EmbedService embedService;
+    private DoorEmbedService doorEmbedService;
 
     @Override
     public List<CarLicense> queryListByUserId(Long userId) {
@@ -50,7 +50,7 @@ public class CarLicenseServiceImpl implements CarLicenseService {
         List<UserCommunity> userCommunityList = userCommunityService.queryByCondition(query, null);
         List<String> carLicenseList = new ArrayList<>();
         carLicenseList.add(carLicense.getLicense());
-        userCommunityList.forEach(userCommunity -> embedService.addCarLicense(userCommunity.getCommunityId(), carLicenseList));
+        userCommunityList.forEach(userCommunity -> doorEmbedService.addCarLicense(userCommunity.getCommunityId(), carLicenseList));
     }
 
     @Override
@@ -66,6 +66,6 @@ public class CarLicenseServiceImpl implements CarLicenseService {
         query.setUserId(carLicense.getUserId());
         query.setType(UserCommunityType.PASS.getType());
         List<UserCommunity> userCommunityList = userCommunityService.queryByCondition(query, null);
-        userCommunityList.forEach(userCommunity -> embedService.delCarLicense(userCommunity.getCommunityId(), carLicenseList));
+        userCommunityList.forEach(userCommunity -> doorEmbedService.delCarLicense(userCommunity.getCommunityId(), carLicenseList));
     }
 }

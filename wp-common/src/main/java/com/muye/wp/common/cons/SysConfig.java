@@ -12,4 +12,6 @@ public class SysConfig {
     public static final BigDecimal ACCOUNT_CASH = new BigDecimal("0.01");
 
     public static final Integer PAY_DEADLINE_MIN = 6;
+
+    public static final BigDecimal OVERDUE_MULTIPLE = new BigDecimal("2");
 }

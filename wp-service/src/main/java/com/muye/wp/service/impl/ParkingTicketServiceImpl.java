@@ -4,16 +4,16 @@ import com.muye.wp.common.cons.*;
 import com.muye.wp.common.exception.WPException;
 import com.muye.wp.common.utils.CommonUtil;
 import com.muye.wp.common.utils.DateUtil;
-import com.muye.wp.dao.domain.ParkingShare;
-import com.muye.wp.dao.domain.ParkingTicket;
-import com.muye.wp.dao.domain.UserCommunity;
+import com.muye.wp.dao.domain.*;
 import com.muye.wp.dao.mapper.ParkingTicketMapper;
 import com.muye.wp.dao.page.Page;
 import com.muye.wp.service.*;
 import com.muye.wp.listener.TicketPayListener;
+import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -84,6 +84,12 @@ public class ParkingTicketServiceImpl implements ParkingTicketService {
 
         if (!accountService.isPaidCash(ticket.getUserId()))
             throw new WPException(RespStatus.BUSINESS_ERR, "您还没有支付账户押金");
+
+        ParkingTicket noPaidQuery = new ParkingTicket();
+        noPaidQuery.setUserId(ticket.getUserId());
+        noPaidQuery.setStatus(ParkingTicketStatus.OVERDUE_UNPAID.getStatus());
+        if (!CollectionUtils.isEmpty(queryListByCondition(noPaidQuery, null)))
+            throw new WPException(RespStatus.BUSINESS_ERR, "你有未支付的逾期停车单未支付，请先支付");
 
         ParkingShare share = parkingShareService.queryByIdForUpdate(ticket.getParkingShareId());
         if (share == null) throw new WPException(RespStatus.RESOURCE_NOT_EXIST);
@@ -168,5 +174,47 @@ public class ParkingTicketServiceImpl implements ParkingTicketService {
         }
 
         return ticket.getTicketNum();
+    }
+
+    @Override
+    public String payOverdue(Long userId, Long id) {
+        ParkingTicket ticket = queryByIdForUpdate(id);
+        if (ticket == null || !ticket.getUserId().equals(userId))
+            throw new WPException(RespStatus.RESOURCE_NOT_EXIST);
+
+        if (!ticket.getStatus().equals(ParkingTicketStatus.OVERDUE_UNPAID.getStatus()))
+            throw new WPException(RespStatus.BUSINESS_ERR, "该停车单状态不是逾期完成未支付");
+
+        String payNum = ticket.getTicketNum().replace(ProductType.PARKING_TICKET.getCode(), ProductType.PARKING_TICKET_OVERDUE.getCode());
+        if (capitalFlowService.queryByOrderNum(payNum) == null){
+            capitalFlowService.add(userId, CapitalFlowDirection.OUT, ProductType.PARKING_TICKET_OVERDUE, payNum, ticket.getOverdueFee());
+        }
+        return payNum;
+    }
+
+    @Override
+    @Transactional
+    public void payToAccount(ParkingTicket ticket) {
+        int status = ticket.getStatus().intValue();
+        if (status != ParkingTicketStatus.FINISH.getStatus().intValue()
+                && status != ParkingTicketStatus.OVERDUE_UNPAID.getStatus().intValue()
+                && status != ParkingTicketStatus.OVERDUE_PAID.getStatus().intValue())
+            throw new WPException(RespStatus.BUSINESS_ERR, "未完成的停车单不能支付");
+
+        String flowNum = ticket.getTicketNum() + "A";
+        if (capitalFlowService.queryByOrderNum(flowNum) != null) return;
+
+        CapitalFlow capitalFlow = new CapitalFlow();
+        capitalFlow.setUserId(parkingShareService.queryByIdForUpdate(ticket.getParkingShareId()).getUserId());
+        capitalFlow.setDirection(CapitalFlowDirection.IN.getDirection());
+        capitalFlow.setType(ProductType.PARKING_TICKET.getType());
+        capitalFlow.setOrderNum(flowNum);
+        capitalFlow.setAmount(ticket.getParkingFee().add(ticket.getOverdueFee()));
+        capitalFlow.setStatus(CapitalFlowStatus.SUCCEED.getStatus());
+        capitalFlowService.add(capitalFlow);
+
+        Account account = accountService.queryByUserIdForUpdate(capitalFlow.getUserId());
+        account.setBalance(account.getBalance().add(capitalFlow.getAmount()));
+        accountService.update(account);
     }
 }

@@ -13,21 +13,15 @@ import java.util.Date;
 @Data
 public class TempCarLicense implements Serializable {
 
-    private Long id;
+    private Long id;        //ticketId
 
     private String carLicense;      //车牌号
-
-    private int start;             //有效期开始时间 yyyyMMddHHmm
-
-    private int end;               //有效期终止时间 yyyyMMddHHmm
 
     @Override
     public String toString() {
         return "TempCarLicense{" +
                 "id=" + id +
                 ", carLicense='" + carLicense + '\'' +
-                ", start=" + start +
-                ", end=" + end +
                 '}';
     }
 }

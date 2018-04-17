@@ -8,7 +8,7 @@ import com.muye.wp.dao.domain.Carport;
 import com.muye.wp.dao.domain.UserCommunity;
 import com.muye.wp.dao.mapper.UserCommunityMapper;
 import com.muye.wp.dao.page.Page;
-import com.muye.wp.embed.server.service.EmbedService;
+import com.muye.wp.embed.server.door.service.DoorEmbedService;
 import com.muye.wp.service.CarLicenseService;
 import com.muye.wp.service.CarportService;
 import com.muye.wp.service.CommunityService;
@@ -39,7 +39,7 @@ public class UserCommunityServiceImpl implements UserCommunityService {
     private CarLicenseService carLicenseService;
 
     @Autowired
-    private EmbedService embedService;
+    private DoorEmbedService doorEmbedService;
 
     @Override
     public void userAuth(UserCommunity userCommunity) {
@@ -67,9 +67,9 @@ public class UserCommunityServiceImpl implements UserCommunityService {
         List<String> carLicenseNumList = new ArrayList<>(carLicenseList.size());
         carLicenseList.forEach(carLicense -> carLicenseNumList.add(carLicense.getLicense()));
         if (UserCommunityType.PASS.getType().equals(type)){
-            embedService.addCarLicense(userCommunity.getCommunityId(), carLicenseNumList);
+            doorEmbedService.addCarLicense(userCommunity.getCommunityId(), carLicenseNumList);
         }else {
-            embedService.delCarLicense(userCommunity.getCommunityId(), carLicenseNumList);
+            doorEmbedService.delCarLicense(userCommunity.getCommunityId(), carLicenseNumList);
         }
 
     }
