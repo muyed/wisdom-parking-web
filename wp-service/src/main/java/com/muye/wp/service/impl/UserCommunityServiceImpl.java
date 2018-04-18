@@ -1,18 +1,16 @@
 package com.muye.wp.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.muye.wp.common.cons.RespStatus;
 import com.muye.wp.common.cons.UserCommunityType;
+import com.muye.wp.common.cons.UserType;
 import com.muye.wp.common.exception.WPException;
-import com.muye.wp.dao.domain.CarLicense;
-import com.muye.wp.dao.domain.Carport;
-import com.muye.wp.dao.domain.UserCommunity;
+import com.muye.wp.dao.domain.*;
+import com.muye.wp.dao.domain.ext.UserCommunityVO;
 import com.muye.wp.dao.mapper.UserCommunityMapper;
 import com.muye.wp.dao.page.Page;
 import com.muye.wp.embed.server.door.service.DoorEmbedService;
-import com.muye.wp.service.CarLicenseService;
-import com.muye.wp.service.CarportService;
-import com.muye.wp.service.CommunityService;
-import com.muye.wp.service.UserCommunityService;
+import com.muye.wp.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -40,6 +38,9 @@ public class UserCommunityServiceImpl implements UserCommunityService {
 
     @Autowired
     private DoorEmbedService doorEmbedService;
+
+    @Autowired
+    private UserService userService;
 
     @Override
     public void userAuth(UserCommunity userCommunity) {
@@ -89,5 +90,32 @@ public class UserCommunityServiceImpl implements UserCommunityService {
         query.setType(UserCommunityType.PASS.getType());
         if (CollectionUtils.isEmpty(userCommunityMapper.selectByCondition(query, null))) return false;
         return true;
+    }
+
+    @Override
+    public List<UserCommunityVO> userCommunityVO(UserCommunity query, Page page) {
+
+        List<UserCommunity> list = queryByCondition(query, page);
+
+        List<UserCommunityVO> voList = new ArrayList<>(list.size());
+        list.forEach(userCommunity -> {
+            Community community = communityService.queryById(userCommunity.getCommunityId());
+            List<Carport> carportList = carportService.queryListByUserIdAndCommunityId(userCommunity.getUserId(), userCommunity.getCommunityId());
+            UserCommunityVO vo = new UserCommunityVO();
+            vo.setCommunityId(userCommunity.getCommunityId());
+            vo.setType(userCommunity.getType());
+            vo.setReason(userCommunity.getReason());
+            vo.setCommunityName(community.getCommunityName());
+            vo.setCommunityType(community.getType());
+            vo.setProvince(community.getProvince());
+            vo.setCity(community.getCity());
+            vo.setArea(community.getArea());
+            vo.setAddr(community.getAddr());
+            vo.setCarportList(carportList);
+            voList.add(vo);
+        });
+
+
+        return voList;
     }
 }

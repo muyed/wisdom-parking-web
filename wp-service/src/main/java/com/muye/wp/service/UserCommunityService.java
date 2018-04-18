@@ -1,6 +1,7 @@
 package com.muye.wp.service;
 
 import com.muye.wp.dao.domain.UserCommunity;
+import com.muye.wp.dao.domain.ext.UserCommunityVO;
 import com.muye.wp.dao.page.Page;
 
 import java.util.List;
@@ -29,4 +30,9 @@ public interface UserCommunityService {
      * 判断车位是否在用户认证的小区内
      */
     Boolean isAtUserCommunity(Long carportId, Long userId);
+
+    /**
+     * 获取小区及小区内车位
+     */
+    List<UserCommunityVO> userCommunityVO(UserCommunity query, Page page);
 }

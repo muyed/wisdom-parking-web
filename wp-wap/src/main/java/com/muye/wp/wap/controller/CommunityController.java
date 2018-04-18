@@ -157,26 +157,6 @@ public class CommunityController {
             query.setUserId(user.getId());
         }
 
-        List<UserCommunity> list = userCommunityService.queryByCondition(query, page);
-
-        List<JSONObject> vo = new ArrayList<>(list.size());
-        list.forEach(userCommunity -> {
-            Community community = communityService.queryById(userCommunity.getCommunityId());
-            List<Carport> carportList = carportService.queryListByUserIdAndCommunityId(userCommunity.getUserId(), userCommunity.getCommunityId());
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("communityId", userCommunity.getCommunityId());
-            jsonObject.put("type", userCommunity.getType());
-            jsonObject.put("reason", userCommunity.getReason());
-            jsonObject.put("communityName", community.getCommunityName());
-            jsonObject.put("communityType", community.getType());
-            jsonObject.put("province", community.getProvince());
-            jsonObject.put("city", community.getCity());
-            jsonObject.put("area", community.getArea());
-            jsonObject.put("addr", community.getAddr());
-            jsonObject.put("carportList", carportList);
-            vo.add(jsonObject);
-        });
-
-        return Result.ok(vo);
+        return Result.ok(userCommunityService.userCommunityVO(query, page));
     }
 }
