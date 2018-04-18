@@ -22,10 +22,11 @@ public interface UserCommunityMapper {
     @Select("select * from user_community where id = #{id} for update")
     UserCommunity selectByIdForUpdate(@Param("id") Long id);
 
-    @Insert("insert into user_community (user_id, community_id, type, floor_no, unit_no, house_no) values (" +
+    @Insert("insert into user_community (user_id, community_id, type, reason, floor_no, unit_no, house_no) values (" +
             "#{userCommunity.userId}," +
             "#{userCommunity.communityId}," +
             "#{userCommunity.type}," +
+            "#{userCommunity.reason}," +
             "#{userCommunity.floorNo}," +
             "#{userCommunity.unitNo}," +
             "#{userCommunity.houseNo})")
@@ -38,6 +39,7 @@ public interface UserCommunityMapper {
             "<if test='userCommunity.userId != null'>user_id = #{userCommunity.userId},</if>" +
             "<if test='userCommunity.communityId != null'>community_id = #{userCommunity.communityId},</if>" +
             "<if test='userCommunity.type != null'>type = #{userCommunity.type},</if>" +
+            "<if test='userCommunity.reason != null'>reason = #{userCommunity.reason},</if>" +
             "<if test='userCommunity.floorNo != null'>floor_no = #{userCommunity.floorNo},</if>" +
             "<if test='userCommunity.unitNo != null'>unit_no = #{userCommunity.unitNo},</if>" +
             "<if test='userCommunity.houseNo != null'>house_no = #{userCommunity.houseNo},</if>" +

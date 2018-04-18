@@ -166,6 +166,7 @@ public class CommunityController {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("communityId", userCommunity.getCommunityId());
             jsonObject.put("type", userCommunity.getType());
+            jsonObject.put("reason", userCommunity.getReason());
             jsonObject.put("communityName", community.getCommunityName());
             jsonObject.put("communityType", community.getType());
             jsonObject.put("province", community.getProvince());
