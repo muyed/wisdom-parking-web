@@ -6,6 +6,7 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 /**
  * Created by muye on 17/6/14.
@@ -110,5 +111,29 @@ public class FieldUtil {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    public static <T> T objConvert(Object obj, Class<T> clazz) throws Exception{
+        if (obj == null){
+            return null;
+        }
+        T t = clazz.newInstance();
+        Stream.concat(Stream.of(obj.getClass().getDeclaredFields()), Stream.of(obj.getClass().getSuperclass().getDeclaredFields()))
+                .forEach(field -> {
+                    field.setAccessible(true);
+                    try {
+                        Object fieldVal = field.get(obj);
+                        Field tField;
+                        try {
+                            tField = clazz.getDeclaredField(field.getName());
+                        }catch (NoSuchFieldException e){
+                            tField = clazz.getSuperclass().getDeclaredField(field.getName());
+                        }
+                        tField.setAccessible(true);
+                        tField.set(t, fieldVal);
+                    }catch (Exception e){
+                    }
+                });
+        return t;
     }
 }

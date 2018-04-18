@@ -3,6 +3,7 @@ package com.muye.wp.dao.domain.ext;
 import com.muye.wp.dao.domain.Carport;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,5 +21,10 @@ public class UserCommunityVO {
     private String city;
     private String area;
     private String addr;
-    private List<Carport> carportList;
+    private List<CarportExt> carportList;
+
+    public void addCarport(CarportExt ext){
+        if (carportList == null) carportList = new ArrayList<>();
+        carportList.add(ext);
+    }
 }

@@ -5,7 +5,9 @@ import com.muye.wp.common.cons.RespStatus;
 import com.muye.wp.common.cons.UserCommunityType;
 import com.muye.wp.common.cons.UserType;
 import com.muye.wp.common.exception.WPException;
+import com.muye.wp.common.utils.FieldUtil;
 import com.muye.wp.dao.domain.*;
+import com.muye.wp.dao.domain.ext.CarportExt;
 import com.muye.wp.dao.domain.ext.UserCommunityVO;
 import com.muye.wp.dao.mapper.UserCommunityMapper;
 import com.muye.wp.dao.page.Page;
@@ -100,7 +102,12 @@ public class UserCommunityServiceImpl implements UserCommunityService {
         List<UserCommunityVO> voList = new ArrayList<>(list.size());
         list.forEach(userCommunity -> {
             Community community = communityService.queryById(userCommunity.getCommunityId());
-            List<Carport> carportList = carportService.queryListByUserIdAndCommunityId(userCommunity.getUserId(), userCommunity.getCommunityId());
+
+            Carport carportQuery = new Carport();
+            carportQuery.setCommunityId(userCommunity.getCommunityId());
+            List<Carport> carportList = carportService.queryListByCondition(carportQuery, null);
+            List<Carport> userCarportList = carportService.queryListByUserIdAndCommunityId(userCommunity.getUserId(), userCommunity.getCommunityId());
+
             UserCommunityVO vo = new UserCommunityVO();
             vo.setCommunityId(userCommunity.getCommunityId());
             vo.setType(userCommunity.getType());
@@ -111,8 +118,25 @@ public class UserCommunityServiceImpl implements UserCommunityService {
             vo.setCity(community.getCity());
             vo.setArea(community.getArea());
             vo.setAddr(community.getAddr());
-            vo.setCarportList(carportList);
+
+            carportList.stream()
+                    .map(carport -> {
+                        CarportExt ext = null;
+                        try {
+                            ext = FieldUtil.objConvert(carport, CarportExt.class);
+                            ext.setId(carport.getId());
+                        }catch (Exception e){
+                        }
+                        return ext;
+                    }).filter(ext -> ext != null)
+                    .forEach(ext -> {
+                        ext.setBind(userCarportList.stream().anyMatch(userCarport -> userCarport.getId().intValue() == ext.getId().intValue()));
+                        vo.addCarport(ext);
+                    });
+
             voList.add(vo);
+
+
         });
 
 
