@@ -85,6 +85,7 @@ public class CarportController {
             Carport carport = carportService.queryById(userCarport.getCarportId());
             Community community = communityService.queryById(carport.getCommunityId());
 
+            jsonObject.put("carportNum", carport.getCarportNum());
             jsonObject.put("province", community.getProvince());
             jsonObject.put("city", community.getCity());
             jsonObject.put("area", community.getArea());
