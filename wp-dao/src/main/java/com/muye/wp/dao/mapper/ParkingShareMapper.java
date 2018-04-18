@@ -33,7 +33,7 @@ public interface ParkingShareMapper {
             "<if test='query.province != null'>and province = #{query.province}</if>" +
             "<if test='query.city != null'>and city = #{query.city}</if>" +
             "<if test='query.area != null'>and area = #{query.area}</if>" +
-            "<if test='query.addt != null'>and addr = #{query.addr}</if>" +
+            "<if test='query.addr != null'>and addr = #{query.addr}</if>" +
             "<if test='query.longitude != null'>and longitude = #{query.longitude}</if>" +
             "<if test='query.latitude != null'>and latitude = #{query.latitude}</if>" +
             "<if test='query.ranges != null'>" +
