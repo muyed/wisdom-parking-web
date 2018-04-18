@@ -28,10 +28,12 @@ public interface ParkingShareMapper {
             "<if test='query.carportMeid != null'>and carport_meid = #{query.carportMeid}</if>" +
             "<if test='query.carportNum != null'>and carport_num = #{query.carportNum}</if>" +
             "<if test='query.communityId != null'>and community_id = #{query.communityId}</if>" +
+            "<if test='query.communityName != null'>and communityName = #{query.communityName}</if>" +
             "<if test='query.communityType != null'>and community_type = #{query.communityType}</if>" +
             "<if test='query.province != null'>and province = #{query.province}</if>" +
             "<if test='query.city != null'>and city = #{query.city}</if>" +
             "<if test='query.area != null'>and area = #{query.area}</if>" +
+            "<if test='query.addt != null'>and addr = #{query.addr}</if>" +
             "<if test='query.longitude != null'>and longitude = #{query.longitude}</if>" +
             "<if test='query.latitude != null'>and latitude = #{query.latitude}</if>" +
             "<if test='query.ranges != null'>" +
@@ -50,7 +52,7 @@ public interface ParkingShareMapper {
     List<ParkingShare> selectListByCondition(@Param("query") ParkingShare query, Page page);
 
     @Insert("insert into parking_share (share_num, user_id, carport_id, parking_ticket_id, start_time, stop_time, price, status, " +
-            "carport_meid, carport_Num,community_id, community_type, province, city, area, longitude, latitude) values (" +
+            "carport_meid, carport_Num,community_id, community_name, community_type, province, city, area, addr, longitude, latitude) values (" +
             "#{share.shareNum}," +
             "#{share.userId}," +
             "#{share.carportId}," +
@@ -62,10 +64,12 @@ public interface ParkingShareMapper {
             "#{share.carportMeid}," +
             "#{share.carportNum}," +
             "#{share.communityId}," +
+            "#{share.communityName}," +
             "#{share.communityType}," +
             "#{share.province}," +
             "#{share.city}," +
             "#{share.area}," +
+            "#{share.addr}," +
             "#{share.longitude}," +
             "#{share.latitude})")
     @SelectKey(statement = "SELECT LAST_INSERT_ID()", keyColumn = "id", keyProperty = "share.id", resultType = Long.class, before = false)
@@ -101,10 +105,12 @@ public interface ParkingShareMapper {
             "carport_meid = #{share.carportMeid}," +
             "carport_num = #{share.carportNum}," +
             "community_id = #{share.communityId}," +
+            "community_name = #{share.communityName}," +
             "community_type = #{share.communityType}," +
             "province = #{share.province}," +
             "city = #{share.city}," +
             "area = #{share.area}," +
+            "addr = #{share.addr}," +
             "longitude = #{share.longitude}," +
             "latitude = #{share.latitude} " +
             "where id = #{share.id}")

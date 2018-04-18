@@ -28,10 +28,12 @@ public class ParkingShare extends BaseDomain {
     private String carportMeid; //车位锁设备码
     private String carportNum;  //车位号
     private Long communityId;   //小区id
+    private String communityName;   //小区名称
     private Integer communityType;  //小区类型
     private String province;    //省
     private String city;        //市
     private String area;        //区
+    private String addr;        //地址
     private BigDecimal longitude;   //经度
     private BigDecimal latitude;    //纬度
 }

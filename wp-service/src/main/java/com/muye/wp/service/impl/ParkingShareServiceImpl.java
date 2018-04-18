@@ -82,9 +82,11 @@ public class ParkingShareServiceImpl implements ParkingShareService{
         share.setCarportMeid(carport.getMeid());
         share.setCommunityId(carport.getCommunityId());
         share.setCommunityType(community.getType());
+        share.setCommunityName(community.getCommunityName());
         share.setProvince(community.getProvince());
         share.setCity(community.getCity());
         share.setArea(community.getArea());
+        share.setAddr(community.getAddr());
         share.setLatitude(carport.getLatitude());
         share.setLongitude(carport.getLongitude());
         share.setStatus(ParkingShareStatus.MATCH.getStatus());
