@@ -1,24 +1,22 @@
-package com.muye.wp.pay.mayi.callback;
+package com.muye.wp.pay.callback;
 
 import com.muye.wp.common.cons.CapitalFlowStatus;
-import com.muye.wp.common.cons.ParkingTicketStatus;
-import com.muye.wp.common.cons.ProductType;
+import com.muye.wp.dao.domain.Account;
 import com.muye.wp.dao.domain.CapitalFlow;
-import com.muye.wp.dao.domain.ParkingTicket;
+import com.muye.wp.service.AccountService;
 import com.muye.wp.service.CapitalFlowService;
-import com.muye.wp.service.ParkingTicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Created by muye on 18/4/17.
+ * Created by muye on 18/4/9.
  */
-@Component("ticketOverdueCallback")
-public class TicketOverdueCallback implements MayiCallback {
+@Component("accountCashCallback")
+public class AccountCashCallback implements Callback {
 
     @Autowired
-    private ParkingTicketService parkingTicketService;
+    private AccountService accountService;
 
     @Autowired
     private CapitalFlowService capitalFlowService;
@@ -26,21 +24,18 @@ public class TicketOverdueCallback implements MayiCallback {
     @Override
     @Transactional
     public void finishedCallback(String orderNum) {
-
-        String ticketNum = orderNum.replace(ProductType.PARKING_TICKET_OVERDUE.getCode(), ProductType.PARKING_TICKET.getCode());
-        ParkingTicket ticket = parkingTicketService.queryByTicketNumForUpdate(ticketNum);
         CapitalFlow flow = capitalFlowService.queryByOrderNum(orderNum);
+        Account account = accountService.queryByUserIdForUpdate(flow.getUserId());
 
-        ticket.setStatus(ParkingTicketStatus.OVERDUE_PAID.getStatus());
         flow.setStatus(CapitalFlowStatus.SUCCEED.getStatus());
+        account.setCash(account.getCash().add(flow.getAmount()));
 
-        parkingTicketService.update(ticket);
         capitalFlowService.update(flow);
+        accountService.update(account);
     }
 
     @Override
     public void successCallback(String orderNum) {
-
         finishedCallback(orderNum);
     }
 

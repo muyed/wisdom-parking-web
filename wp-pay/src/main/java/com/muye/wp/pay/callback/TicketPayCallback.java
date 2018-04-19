@@ -1,4 +1,4 @@
-package com.muye.wp.pay.mayi.callback;
+package com.muye.wp.pay.callback;
 
 import com.muye.wp.common.cons.CapitalFlowStatus;
 import com.muye.wp.common.cons.ParkingShareStatus;
@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Created by muye on 18/4/11.
  */
 @Component("ticketPayCallback")
-public class TicketPayCallback implements MayiCallback {
+public class TicketPayCallback implements Callback {
 
     @Autowired
     private ParkingTicketService parkingTicketService;

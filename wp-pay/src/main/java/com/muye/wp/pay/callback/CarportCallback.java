@@ -1,4 +1,4 @@
-package com.muye.wp.pay.mayi.callback;
+package com.muye.wp.pay.callback;
 
 import com.muye.wp.common.cons.CapitalFlowStatus;
 import com.muye.wp.common.cons.UserCarportStatus;
@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Created by muye on 18/3/31.
  */
 @Component("carportCallback")
-public class CarportCallback implements MayiCallback{
+public class CarportCallback implements Callback {
 
     @Autowired
     private UserCarportService userCarportService;

@@ -36,7 +36,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/",
                         "/api/reg/**",
                         "/api/login/**",
-                        "/api/pay/mayi/callback").permitAll()
+                        "/api/pay/mayi/callback",
+                        "/api/pay/wx/callback").permitAll()
                 .antMatchers(HttpMethod.OPTIONS).permitAll()
                 .anyRequest().authenticated()
                 .and()

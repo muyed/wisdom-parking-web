@@ -1,7 +1,11 @@
 package com.muye.wp.wap.controller;
 
+import com.muye.wp.common.cons.ProductType;
+import com.muye.wp.common.cons.RespStatus;
 import com.muye.wp.common.cons.UserType;
+import com.muye.wp.common.exception.WPException;
 import com.muye.wp.common.rest.Result;
+import com.muye.wp.pay.callback.Callback;
 import com.muye.wp.pay.mayi.MayiPay;
 import com.muye.wp.pay.wx.WxPay;
 import com.muye.wp.pay.wx.WxPayUtil;
@@ -57,21 +61,31 @@ public class PayController {
     @RequestMapping(value = "/wx/callback")
     @ResponseBody
     public String wxCallback(HttpServletRequest request){
-
         try {
             InputStream in = request.getInputStream();
             byte[] buffer = new byte[request.getContentLength()];
             in.read(buffer);
             String xml = new String(buffer, "UTF-8");
-
             Map<String, String> params = WxPayUtil.xmlToMap(xml);
+            String wxSign = params.remove("sign");
+            String sign = WxPayUtil.callbackSign(params);
+            if (!sign.equals(wxSign)){
+                throw new WPException(RespStatus.BUSINESS_ERR, "签名失败");
+            }
+            String orderNum = params.get("out_trade_no");
+            String productCode = params.get("body");
+            ProductType type = ProductType.ofCode(productCode);
+            Callback callback = Callback.of(type);
+            callback.finishedCallback(orderNum);
 
-            System.out.println();
         } catch (Exception e){
-
+            e.printStackTrace();
         }
 
-        return "";
+        return "<xml>\n" +
+                "\n" +
+                "  <return_code><![CDATA[SUCCESS]]></return_code>\n" +
+                "  <return_msg><![CDATA[OK]]></return_msg>\n" +
+                "</xml>";
     }
-
 }

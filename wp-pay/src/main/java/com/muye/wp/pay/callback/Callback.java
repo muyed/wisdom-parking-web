@@ -1,4 +1,4 @@
-package com.muye.wp.pay.mayi.callback;
+package com.muye.wp.pay.callback;
 
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.internal.util.AlipaySignature;
@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * Created by muye on 18/3/31.
  */
-public interface MayiCallback {
+public interface Callback {
 
     void finishedCallback(String orderNum);
 
@@ -30,8 +30,8 @@ public interface MayiCallback {
         return params;
     }
 
-    static MayiCallback of(ProductType type){
-        Class<MayiCallback> clazz = MayiCallback.class;
+    static Callback of(ProductType type){
+        Class<Callback> clazz = Callback.class;
         switch (type){
             case CARPORT_DEPOSIT: return SpringUtil.getBean("carportCallback", clazz);
             case ACCOUNT_DEPOSIT: return SpringUtil.getBean("accountCashCallback", clazz);

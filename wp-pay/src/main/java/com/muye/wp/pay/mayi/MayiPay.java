@@ -5,7 +5,7 @@ import com.muye.wp.common.cons.ProductType;
 import com.muye.wp.common.cons.RespStatus;
 import com.muye.wp.common.exception.WPException;
 import com.muye.wp.dao.domain.CapitalFlow;
-import com.muye.wp.pay.mayi.callback.MayiCallback;
+import com.muye.wp.pay.callback.Callback;
 import com.muye.wp.service.CapitalFlowService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +59,7 @@ public class MayiPay {
         logger.info("支付宝回调中...");
         Map<String, String> params;
         try {
-            params =  MayiCallback.checkNotify(request, publicKey);
+            params =  Callback.checkNotify(request, publicKey);
         } catch (Exception e){
             logger.error("参数检验失败: {}", e);
             throw new WPException(RespStatus.PAY_CALLBACK_FAIL, "参数检验失败");
@@ -71,7 +71,7 @@ public class MayiPay {
 
         ProductType type = ProductType.ofName(productName);
 
-        MayiCallback callback = MayiCallback.of(type);
+        Callback callback = Callback.of(type);
 
         switch (tradeStatus){
             case "TRADE_FINISHED":

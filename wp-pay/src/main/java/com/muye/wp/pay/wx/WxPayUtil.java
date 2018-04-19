@@ -102,12 +102,26 @@ public class WxPayUtil {
         Map<String, String> map = new HashMap<>();
         Document document = DocumentHelper.parseText(xml);
         Element root = document.getRootElement();
-        Iterator<Element> iterator = root.attributeIterator();
+        Iterator<Element> iterator = root.elementIterator();
         while (iterator.hasNext()){
             Element element = iterator.next();
             if (StringUtils.isNotEmpty(element.getTextTrim())) map.put(element.getName(), element.getTextTrim());
         }
-
         return map;
+    }
+
+    public static String callbackSign(Map<String, String> params){
+
+        List<String> list = new ArrayList<>();
+        params.keySet()
+                .stream()
+                .filter(key -> !key.equals("return_code") && !key.equals("return_msg") && !key.equals("result_code"))
+                .map(key -> key + "=" + params.get(key))
+                .forEach(list::add);
+
+        Collections.sort(list);
+
+        String sign = list.stream().reduce((a, b) -> a + "&" + b).get() + "&key=" + key;
+        return DigestUtils.md5Hex(sign).toUpperCase();
     }
 }
