@@ -22,4 +22,6 @@ public interface CapitalFlowService {
     CapitalFlow queryByOrderNum(String orderNum);
 
     void update(CapitalFlow flow);
+
+    int getTimeoutExpress(CapitalFlow flow);
 }

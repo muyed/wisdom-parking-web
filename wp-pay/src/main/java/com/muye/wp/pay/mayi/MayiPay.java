@@ -4,12 +4,9 @@ import com.muye.wp.common.cons.CapitalFlowStatus;
 import com.muye.wp.common.cons.ProductType;
 import com.muye.wp.common.cons.RespStatus;
 import com.muye.wp.common.exception.WPException;
-import com.muye.wp.common.utils.DateUtil;
 import com.muye.wp.dao.domain.CapitalFlow;
-import com.muye.wp.dao.domain.ParkingTicket;
 import com.muye.wp.pay.mayi.callback.MayiCallback;
 import com.muye.wp.service.CapitalFlowService;
-import com.muye.wp.service.ParkingTicketService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +14,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
 import java.util.Map;
 
 /**
@@ -40,33 +36,18 @@ public class MayiPay {
     @Autowired
     private CapitalFlowService capitalFlowService;
 
-    @Autowired
-    private ParkingTicketService parkingTicketService;
-
     /**
      * 根据支付流水单 创建支付宝支付单
      */
     public String genPayInfo(String orderNum){
         CapitalFlow capitalFlow = capitalFlowService.queryByOrderNum(orderNum);
-        Integer timeoutExpress = 30;
 
-        if (capitalFlow == null) {
-            throw new WPException(RespStatus.RESOURCE_NOT_EXIST);
-        }
+        if (capitalFlow == null) throw new WPException(RespStatus.RESOURCE_NOT_EXIST);
 
-        if (!capitalFlow.getStatus().equals(CapitalFlowStatus.ING.getStatus())){
+        if (!capitalFlow.getStatus().equals(CapitalFlowStatus.ING.getStatus()))
             throw new WPException(RespStatus.PAY_GEN_INFO_FAIL, "订单已过期");
-        }
 
-        //停车单需设置过期时间
-        if (capitalFlow.getType().equals(ProductType.PARKING_TICKET.getType())){
-            ParkingTicket ticket = parkingTicketService.queryByTicketNum(orderNum);
-            timeoutExpress = DateUtil.betweenMin(ticket.getPayDeadlineTime(), new Date()) * -1;
-            if (timeoutExpress < 0)
-                throw new WPException(RespStatus.PAY_GEN_INFO_FAIL, "订单已过期");
-            if (timeoutExpress == 0)
-                timeoutExpress = 1;
-        }
+        Integer timeoutExpress = capitalFlowService.getTimeoutExpress(capitalFlow);
 
         return SignUtil.sign(appId, privateKey, capitalFlow, timeoutExpress);
     }
