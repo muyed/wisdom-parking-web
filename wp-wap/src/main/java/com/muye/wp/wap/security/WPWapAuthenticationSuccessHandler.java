@@ -2,6 +2,7 @@ package com.muye.wp.wap.security;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.muye.wp.common.cons.SysConfig;
 import com.muye.wp.common.cons.UserType;
 import com.muye.wp.common.rest.Result;
 import com.muye.wp.dao.domain.Account;
@@ -72,6 +73,12 @@ public class WPWapAuthenticationSuccessHandler implements AuthenticationSuccessH
             jsonObject.put("communityList", communityList);
             jsonObject.put("account", account);
             jsonObject.put("userCarportList", userCarportList);
+            jsonObject.put("realName", user.getRealName());                     //实名认证姓名  未认证为空
+            jsonObject.put("identityCard", user.getIdentityCard());             //实名认证身份证号 未认证为空
+            jsonObject.put("accountCashConf", SysConfig.ACCOUNT_CASH);          //系统配置 账户押金金额
+            jsonObject.put("carportCashConf", SysConfig.CARPORT_DEPOSIT);       //系统配置 车位押金金额
+            jsonObject.put("overdueMultipleConf", SysConfig.OVERDUE_MULTIPLE);  //系统配置 逾期支付倍数
+            jsonObject.put("payDeadlineMinConf", SysConfig.PAY_DEADLINE_MIN);   //系统配置 停车单截止支付时长（分钟）
 
             result = Result.ok(jsonObject);
 

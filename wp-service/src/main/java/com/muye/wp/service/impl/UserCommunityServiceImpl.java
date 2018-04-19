@@ -128,7 +128,8 @@ public class UserCommunityServiceImpl implements UserCommunityService {
                         }catch (Exception e){
                         }
                         return ext;
-                    }).filter(ext -> ext != null)
+                    })
+                    .filter(ext -> ext != null)
                     .forEach(ext -> {
                         ext.setBind(userCarportList.stream().anyMatch(userCarport -> userCarport.getId().intValue() == ext.getId().intValue()));
                         vo.addCarport(ext);
