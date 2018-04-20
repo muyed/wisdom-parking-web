@@ -1,6 +1,7 @@
 package com.muye.wp.pay.wx;
 
 import com.muye.wp.common.cons.CapitalFlowStatus;
+import com.muye.wp.common.cons.ProductType;
 import com.muye.wp.common.cons.RespStatus;
 import com.muye.wp.common.exception.WPException;
 import com.muye.wp.dao.domain.CapitalFlow;
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -36,5 +38,10 @@ public class WxPay {
         LocalDateTime endTime = LocalDateTime.now().plusMinutes(timeoutExpress);
 
         return WxPayUtil.payInfo(flow, endTime);
+    }
+
+    public void withdraw(String encBankNo, String encTrueName, int bankCode, BigDecimal amount){
+
+
     }
 }

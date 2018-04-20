@@ -18,6 +18,7 @@ public enum RespStatus {
 
     PAY_GEN_INFO_FAIL(10, "生成支付信息失败"),
     PAY_CALLBACK_FAIL(11, "支付回调失败"),
+    WITHDRAW_ERR(12, "提现失败"),
 
     AUTH_ERR(20, "权限异常,请联系开发"),
     AUTH_NOT(21, "没有权限"),

@@ -53,9 +53,9 @@ public class PayController {
 
     @Auth(UserType.GENERAL)
     @GetMapping("/wx/{orderNum}")
-    public Result<String> wx(@PathVariable String orderNum){
+    public Result<Map> wx(@PathVariable String orderNum) throws Exception{
 
-        return Result.ok(wxPay.genPayInfo(orderNum));
+        return Result.ok(WxPayUtil.xmlToMap(wxPay.genPayInfo(orderNum)));
     }
 
     @RequestMapping(value = "/wx/callback")

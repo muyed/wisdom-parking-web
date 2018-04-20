@@ -14,6 +14,9 @@ public enum ProductType {
     PARKING_TICKET(4, "PT", "停车单"),
     PARKING_TICKET_OVERDUE(5, "PTO", "停车单逾期费用"),
     COUPON_COST(6, "CC", "卡券费用"),
+
+    WITHDRAW_CARPORT_DEPOSIT(10, "WCD", "车位锁押金提取"),
+    WITHDRAW_ACCOUNT_DEPOSIT(11, "WAD", "账户押金提取"),
     ;
 
     private Integer type;
