@@ -48,7 +48,7 @@ public class WxPayUtil {
     private static final String wxPriKeyPath = "/usr/local/wp/wp-wap/config/apiclient_cert.p12";
     private static final String wxPubKeyPath = "/usr/local/wp/wp-wap/config/wx_pub.pem";
 
-    public static String payInfo(CapitalFlow flow, LocalDateTime endTime){
+    public static Map<String, String> payInfo(CapitalFlow flow, LocalDateTime endTime){
 
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 
@@ -80,7 +80,32 @@ public class WxPayUtil {
 
         String xml = listToXml(params);
         try {
-            return requestWx(url, xml, false);
+            Map<String, String> map = WxPayUtil.xmlToMap(requestWx(url, xml, false));
+            map.put("partnerid", map.remove("mch_id"));
+            map.put("prepayid", map.remove("prepay_id"));
+            map.put("package", "Sign=WXPay");
+            map.put("noncestr", UUID.randomUUID().toString().replace("-", ""));
+            map.put("timestamp", new Date().getTime() + "");
+
+            map.remove("sign");
+            map.remove("trade_type");
+            map.remove("return_msg");
+            map.remove("result_code");
+            map.remove("return_code");
+
+            List<String> payParams = new ArrayList<>();
+
+            map.keySet()
+                    .stream()
+                    .map(key -> key +"=" + map.get(key))
+                    .forEach(payParams::add);
+
+            Collections.sort(payParams);
+
+            String paySign = payParams.stream().reduce((a, b) -> a + "&" + b).get() + "&key=" + key;
+            paySign = DigestUtils.md5Hex(paySign).toUpperCase();
+            map.put("sign", sign);
+            return map;
         }catch (Exception e){
             throw new WPException(RespStatus.PAY_GEN_INFO_FAIL);
         }

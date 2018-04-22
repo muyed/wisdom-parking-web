@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Map;
 
 /**
  * Created by muye on 18/4/19.
@@ -24,7 +25,7 @@ public class WxPay {
     @Autowired
     private CapitalFlowService capitalFlowService;
 
-    public String genPayInfo(String orderNum){
+    public Map<String, String> genPayInfo(String orderNum){
 
         CapitalFlow flow = capitalFlowService.queryByOrderNum(orderNum);
 

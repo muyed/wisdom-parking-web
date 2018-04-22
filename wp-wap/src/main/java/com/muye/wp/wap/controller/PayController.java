@@ -56,8 +56,7 @@ public class PayController {
     @GetMapping("/wx/{orderNum}")
     public Result<Map> wx(@PathVariable String orderNum) throws Exception{
 
-        Map<String, String> map = WxPayUtil.xmlToMap(wxPay.genPayInfo(orderNum));
-        map.put("timestamp", new Date().getTime() + "");
+        Map<String, String> map = wxPay.genPayInfo(orderNum);
         return Result.ok(map);
     }
 
