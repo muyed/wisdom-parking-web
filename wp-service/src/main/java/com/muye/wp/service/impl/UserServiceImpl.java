@@ -117,6 +117,7 @@ public class UserServiceImpl implements UserService {
                 user.setIdentityCard(idcard);
                 user.setRealName(realName);
                 userMapper.update(user);
+                return;
             }
             throw new WPException(RespStatus.AUTH_IDCARD_FAIL);
         }catch (Exception e){

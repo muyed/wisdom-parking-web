@@ -45,6 +45,8 @@ public class WxPayUtil {
     private static final String url = "https://api.mch.weixin.qq.com/pay/unifiedorder";
 
     private static final String payBankUrl = "https://api.mch.weixin.qq.com/mmpaysptrans/pay_bank";
+    private static final String wxPriKeyPath = "/usr/local/wp/wp-wap/config/apiclient_cert.p12";
+    private static final String wxPubKeyPath = "/usr/local/wp/wp-wap/config/wx_pub.pem";
 
     public static String payInfo(CapitalFlow flow, LocalDateTime endTime){
 
@@ -78,7 +80,7 @@ public class WxPayUtil {
 
         String xml = listToXml(params);
         try {
-            return requestWx(url, xml);
+            return requestWx(url, xml, false);
         }catch (Exception e){
             throw new WPException(RespStatus.PAY_GEN_INFO_FAIL);
         }
@@ -127,7 +129,7 @@ public class WxPayUtil {
         String xml = listToXml(params);
 
         try {
-            Map<String, String> resp = xmlToMap(requestWx(payBankUrl, xml));
+            Map<String, String> resp = xmlToMap(requestWx(payBankUrl, xml, true));
             if (!resp.get("return_code").equals("SUCCESS")) throw new WPException(RespStatus.WITHDRAW_ERR, resp.get("err_code_des"));
         }catch (Exception e){
             throw new WPException(RespStatus.WITHDRAW_ERR, "调用微信接口失败");
@@ -162,8 +164,21 @@ public class WxPayUtil {
         return xml;
     }
 
-    public static String requestWx(String url, String xml) throws Exception{
-        HttpClient httpClient = HttpClients.createDefault();
+    public static String requestWx(String url, String xml, boolean ssl) throws Exception{
+        HttpClient httpClient;
+        if (ssl){
+            KeyStore keyStore  = KeyStore.getInstance("PKCS12");
+            FileInputStream in = new FileInputStream(new File(wxPriKeyPath));
+            keyStore.load(in, mchId.toCharArray());
+            SSLContext sslcontext = SSLContexts.custom().loadKeyMaterial(keyStore, mchId.toCharArray()).build();
+            SSLConnectionSocketFactory factory = new SSLConnectionSocketFactory(sslcontext,
+                    new String[]{"TLSv1"},
+                    null,
+                    SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
+            httpClient = HttpClients.custom().setSSLSocketFactory(factory).build();
+        } else {
+            httpClient = HttpClients.createDefault();
+        }
         HttpPost post = new HttpPost(url);
         post.setHeader("Content-Type","text/plain");
         StringEntity entity = new StringEntity(xml, Charset.forName("UTF-8"));
