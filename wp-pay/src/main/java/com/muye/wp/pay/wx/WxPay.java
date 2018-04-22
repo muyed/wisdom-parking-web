@@ -1,7 +1,6 @@
 package com.muye.wp.pay.wx;
 
 import com.muye.wp.common.cons.CapitalFlowStatus;
-import com.muye.wp.common.cons.ProductType;
 import com.muye.wp.common.cons.RespStatus;
 import com.muye.wp.common.exception.WPException;
 import com.muye.wp.dao.domain.CapitalFlow;

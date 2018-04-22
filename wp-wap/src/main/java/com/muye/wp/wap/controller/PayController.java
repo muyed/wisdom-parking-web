@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.InputStream;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -55,7 +56,9 @@ public class PayController {
     @GetMapping("/wx/{orderNum}")
     public Result<Map> wx(@PathVariable String orderNum) throws Exception{
 
-        return Result.ok(WxPayUtil.xmlToMap(wxPay.genPayInfo(orderNum)));
+        Map<String, String> map = WxPayUtil.xmlToMap(wxPay.genPayInfo(orderNum));
+        map.put("timestamp", new Date().getTime() + "");
+        return Result.ok(map);
     }
 
     @RequestMapping(value = "/wx/callback")
