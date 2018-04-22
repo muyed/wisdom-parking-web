@@ -72,8 +72,11 @@ public class CommunityController {
      */
     @Auth({UserType.OPERATOR, UserType.GENERAL, UserType.PROPERTY})
     @GetMapping("/list")
-    public Result<List<Community>> list(Community query, Page page){
-        return Result.ok(communityService.queryByCondition(query, page));
+    public Result<JSONObject> list(Community query, Page page){
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("list", communityService.queryByCondition(query, page));
+        jsonObject.put("page", page);
+        return Result.ok(jsonObject);
     }
 
     /**
