@@ -92,6 +92,7 @@ public class WxPayUtil {
             map.remove("return_msg");
             map.remove("result_code");
             map.remove("return_code");
+            map.remove("nonce_str");
 
             List<String> payParams = new ArrayList<>();
 
@@ -104,7 +105,7 @@ public class WxPayUtil {
 
             String paySign = payParams.stream().reduce((a, b) -> a + "&" + b).get() + "&key=" + key;
             paySign = DigestUtils.md5Hex(paySign).toUpperCase();
-            map.put("sign", sign);
+            map.put("sign", paySign);
             return map;
         }catch (Exception e){
             throw new WPException(RespStatus.PAY_GEN_INFO_FAIL);
