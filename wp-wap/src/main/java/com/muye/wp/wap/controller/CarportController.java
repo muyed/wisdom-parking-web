@@ -1,22 +1,23 @@
 package com.muye.wp.wap.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.muye.wp.common.cons.UserType;
+import com.muye.wp.common.cons.*;
+import com.muye.wp.common.exception.WPException;
 import com.muye.wp.common.rest.Result;
-import com.muye.wp.dao.domain.Carport;
-import com.muye.wp.dao.domain.Community;
-import com.muye.wp.dao.domain.UserCarport;
+import com.muye.wp.common.utils.CommonUtil;
+import com.muye.wp.dao.domain.*;
 import com.muye.wp.dao.domain.ext.UserCarportExt;
 import com.muye.wp.dao.page.Page;
-import com.muye.wp.service.CarportService;
-import com.muye.wp.service.CommunityService;
-import com.muye.wp.service.UserCarportService;
+import com.muye.wp.pay.wx.WxPay;
+import com.muye.wp.service.*;
 import com.muye.wp.wap.security.Auth;
 import com.muye.wp.wap.security.SecurityConfig;
 import netscape.javascript.JSObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +36,15 @@ public class CarportController {
 
     @Autowired
     private CommunityService communityService;
+
+    @Autowired
+    private CapitalFlowService capitalFlowService;
+
+    @Autowired
+    private WxPay wxPay;
+
+    @Autowired
+    private UserBankService userBankService;
 
     @Auth({UserType.OPERATOR, UserType.PROPERTY})
     @PostMapping("/add")
@@ -115,6 +125,37 @@ public class CarportController {
     @PostMapping("/unLock")
     public Result unLock(@RequestBody Carport carport){
         carportService.unLock(SecurityConfig.getLoginId(), carport.getId());
+        return Result.ok();
+    }
+
+    @Auth(UserType.GENERAL)
+    @PostMapping("/withdraw")
+    @Transactional
+    public Result withdraw(@RequestBody UserCarportExt ext){
+
+        UserCarport userCarport = userCarportService.queryByIdForUpdate(ext.getId());
+        if (!userCarport.getUserId().equals(SecurityConfig.getLoginId()))
+            throw new WPException(RespStatus.BUSINESS_ERR, "你未持有改车锁");
+
+        if (!userCarport.getStatus().equals(UserCarportStatus.PAID.getStatus()))
+            throw new WPException(RespStatus.BUSINESS_ERR, "不是已支付状态");
+
+        CapitalFlow flow = new CapitalFlow();
+        flow.setUserId(userCarport.getUserId());
+        flow.setDirection(CapitalFlowDirection.OUT.getDirection());
+        flow.setType(ProductType.WITHDRAW_CARPORT_DEPOSIT.getType());
+        flow.setOrderNum(CommonUtil.genPayNum(ProductType.WITHDRAW_CARPORT_DEPOSIT));
+        flow.setAmount(userCarport.getDeposit());
+        flow.setStatus(CapitalFlowStatus.SUCCEED.getStatus());
+        capitalFlowService.add(flow);
+
+        UserBank userBank = userBankService.queryById(ext.getBankId());
+
+        wxPay.withdraw(userBank, userCarport.getDeposit().multiply(new BigDecimal("100")), flow);
+
+        userCarport.setStatus(UserCarportStatus.WITHDRAW.getStatus());
+        userCarportService.update(userCarport);
+
         return Result.ok();
     }
 }

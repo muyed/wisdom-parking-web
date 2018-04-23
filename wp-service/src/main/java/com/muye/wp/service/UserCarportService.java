@@ -15,6 +15,8 @@ public interface UserCarportService {
 
     UserCarport queryById(Long id);
 
+    UserCarport queryByIdForUpdate(Long id);
+
     UserCarport queryByPayNum(String payNum);
 
     void update(UserCarport userCarport);

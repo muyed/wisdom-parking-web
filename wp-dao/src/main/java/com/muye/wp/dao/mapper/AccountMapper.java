@@ -23,7 +23,7 @@ public interface AccountMapper {
     @Update("update account set " +
             "user_id = #{account.userId}," +
             "balance = #{account.balance}," +
-            "cash = #{account.cash}," +
+            "cash = #{account.cash} " +
             "where id = #{account.id}")
     int update(@Param("account") Account account);
 }

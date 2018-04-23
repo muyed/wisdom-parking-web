@@ -5,7 +5,7 @@ package com.muye.wp.common.cons;
  */
 public enum UserCarportStatus {
 
-    UNPAID(0, "待支付"), PAID(1, "已支付"), PAY_FAILED(2, "支付失败"), DEL(3, "已删除");
+    UNPAID(0, "待支付"), PAID(1, "已支付"), PAY_FAILED(2, "支付失败"), WITHDRAW(3, "已退款");
 
     private Integer status;
     private String message;

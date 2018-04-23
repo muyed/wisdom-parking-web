@@ -50,6 +50,11 @@ public class UserCarportServiceImpl implements UserCarportService {
     }
 
     @Override
+    public UserCarport queryByIdForUpdate(Long id) {
+        return userCarportMapper.selectByIdForUpdate(id);
+    }
+
+    @Override
     public UserCarport queryByPayNum(String payNum) {
         return userCarportMapper.queryByPayNum(payNum);
     }

@@ -10,4 +10,6 @@ import lombok.Data;
 public class UserCarportExt extends UserCarport {
 
     private String bindCode;
+
+    private Long bankId;
 }

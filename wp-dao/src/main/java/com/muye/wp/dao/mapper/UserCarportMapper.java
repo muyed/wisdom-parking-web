@@ -24,6 +24,9 @@ public interface UserCarportMapper {
     @Select("select * from user_carport where id = #{id}")
     UserCarport selectById(@Param("id") Long id);
 
+    @Select("select * from user_carport where id = #{id} for update")
+    UserCarport selectByIdForUpdate(@Param("id") Long id);
+
     @Select("select * from user_carport where pay_num = #{payNum}")
     UserCarport queryByPayNum(@Param("payNum") String payNum);
 

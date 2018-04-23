@@ -1,9 +1,11 @@
 package com.muye.wp.pay.wx;
 
 import com.muye.wp.common.cons.CapitalFlowStatus;
+import com.muye.wp.common.cons.ProductType;
 import com.muye.wp.common.cons.RespStatus;
 import com.muye.wp.common.exception.WPException;
 import com.muye.wp.dao.domain.CapitalFlow;
+import com.muye.wp.dao.domain.UserBank;
 import com.muye.wp.service.CapitalFlowService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,8 +42,14 @@ public class WxPay {
         return WxPayUtil.payInfo(flow, endTime);
     }
 
-    public void withdraw(String encBankNo, String encTrueName, int bankCode, BigDecimal amount){
+    public void withdraw(UserBank userBank, BigDecimal amount, CapitalFlow flow){
 
+        if (amount.intValue() <= 0) throw new WPException(RespStatus.BUSINESS_ERR, "余额不足");
 
+        ProductType type = ProductType.ofType(flow.getType());
+        String encBankNo = userBank.getBankAccount();
+        String encTrueName = userBank.getAccountName();
+        Integer bankCode = userBank.getBankCode();
+        WxPayUtil.withdraw(encBankNo, encTrueName, bankCode, amount, flow.getOrderNum(), type.getName());
     }
 }
