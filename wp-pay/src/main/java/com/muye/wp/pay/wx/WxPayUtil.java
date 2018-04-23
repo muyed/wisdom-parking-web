@@ -85,7 +85,7 @@ public class WxPayUtil {
             map.put("prepayid", map.remove("prepay_id"));
             map.put("package", "Sign=WXPay");
             map.put("noncestr", UUID.randomUUID().toString().replace("-", ""));
-            map.put("timestamp", new Date().getTime() + "");
+            map.put("timestamp", (System.currentTimeMillis() + "").substring(0, 10));
 
             map.remove("sign");
             map.remove("trade_type");
