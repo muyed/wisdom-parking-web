@@ -61,7 +61,7 @@ public class AccountController {
         flow.setAmount(account.getCash());
         flow.setStatus(CapitalFlowStatus.SUCCEED.getStatus());
         capitalFlowService.add(flow);
-        wxPay.withdraw(userBank, account.getCash().multiply(new BigDecimal("100")), flow);
+        wxPay.withdraw(userBank, account.getCash(), flow);
         account.setCash(BigDecimal.ZERO);
         accountService.update(account);
 

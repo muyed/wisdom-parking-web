@@ -151,7 +151,7 @@ public class CarportController {
 
         UserBank userBank = userBankService.queryById(ext.getBankId());
 
-        wxPay.withdraw(userBank, userCarport.getDeposit().multiply(new BigDecimal("100")), flow);
+        wxPay.withdraw(userBank, userCarport.getDeposit(), flow);
 
         userCarport.setStatus(UserCarportStatus.WITHDRAW.getStatus());
         userCarportService.update(userCarport);
