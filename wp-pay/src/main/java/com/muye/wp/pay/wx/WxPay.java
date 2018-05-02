@@ -44,7 +44,7 @@ public class WxPay {
 
     public void withdraw(UserBank userBank, BigDecimal amount, CapitalFlow flow){
 
-        if (amount.intValue() <= 0) throw new WPException(RespStatus.BUSINESS_ERR, "余额不足");
+        if (amount.compareTo(BigDecimal.ZERO) <= 0) throw new WPException(RespStatus.BUSINESS_ERR, "余额不足");
 
         ProductType type = ProductType.ofType(flow.getType());
         String encBankNo = userBank.getBankAccount();
