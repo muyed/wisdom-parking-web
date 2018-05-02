@@ -34,7 +34,7 @@ public class CarLicenseController {
         return Result.ok();
     }
 
-    @DeleteMapping("/del/{id}")
+    @GetMapping("/del/{id}")
     public Result del(@PathVariable Long id){
         carLicenseService.delete(id, SecurityConfig.getLoginId());
         return Result.ok();
