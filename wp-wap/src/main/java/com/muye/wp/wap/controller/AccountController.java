@@ -70,9 +70,9 @@ public class AccountController {
     @Auth(value = UserType.GENERAL, cret = true)
     @PostMapping("/withdrawBalance")
     @Transactional
-    public Result withdrawBalance(@RequestBody Map<String, Object> params){
-        Long bankId = (Long) params.get("bankId");
-        BigDecimal amount = (BigDecimal) params.get("amount");
+    public Result withdrawBalance(@RequestBody Map<String, String> params){
+        Long bankId = Long.valueOf(params.get("bankId"));
+        BigDecimal amount = new BigDecimal(params.get("amount"));
         Account account = accountService.queryByUserIdForUpdate(SecurityConfig.getLoginId());
         if (account.getBalance().compareTo(amount) != 1){
             throw new WPException(RespStatus.BUSINESS_ERR, "余额不足");

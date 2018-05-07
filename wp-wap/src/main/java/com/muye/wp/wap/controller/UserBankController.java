@@ -32,8 +32,8 @@ public class UserBankController {
     }
 
     @Auth(UserType.GENERAL)
-    @GetMapping("/list")
-    public Result list(){
+    @GetMapping("/myList")
+    public Result myList(){
 
         UserBank query = new UserBank();
         query.setUserId(SecurityConfig.getLoginId());
