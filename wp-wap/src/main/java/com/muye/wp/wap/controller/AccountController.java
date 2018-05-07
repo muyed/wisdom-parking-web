@@ -1,9 +1,7 @@
 package com.muye.wp.wap.controller;
 
-import com.muye.wp.common.cons.CapitalFlowDirection;
-import com.muye.wp.common.cons.CapitalFlowStatus;
-import com.muye.wp.common.cons.ProductType;
-import com.muye.wp.common.cons.UserType;
+import com.muye.wp.common.cons.*;
+import com.muye.wp.common.exception.WPException;
 import com.muye.wp.common.rest.Result;
 import com.muye.wp.common.utils.CommonUtil;
 import com.muye.wp.dao.domain.Account;
@@ -20,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 /**
  * Created by muye on 18/4/9.
@@ -63,6 +62,37 @@ public class AccountController {
         capitalFlowService.add(flow);
         wxPay.withdraw(userBank, account.getCash(), flow);
         account.setCash(BigDecimal.ZERO);
+        accountService.update(account);
+
+        return Result.ok();
+    }
+
+    @Auth(value = UserType.GENERAL, cret = true)
+    @PostMapping("/withdrawBalance")
+    @Transactional
+    public Result withdrawBalance(@RequestBody Map<String, Object> params){
+        Long bankId = (Long) params.get("bankId");
+        BigDecimal amount = (BigDecimal) params.get("amount");
+        Account account = accountService.queryByUserIdForUpdate(SecurityConfig.getLoginId());
+        if (account.getBalance().compareTo(amount) != 1){
+            throw new WPException(RespStatus.BUSINESS_ERR, "余额不足");
+        }
+        if (amount.compareTo(BigDecimal.ZERO) == -1){
+            throw new WPException(RespStatus.BUSINESS_ERR, "金额不能小于0");
+        }
+
+        UserBank userBank = userBankService.queryById(bankId);
+
+        CapitalFlow flow = new CapitalFlow();
+        flow.setUserId(account.getUserId());
+        flow.setDirection(CapitalFlowDirection.OUT.getDirection());
+        flow.setType(ProductType.WITHDRAW_ACCOUNT_BALANCE.getType());
+        flow.setOrderNum(CommonUtil.genPayNum(ProductType.WITHDRAW_ACCOUNT_BALANCE));
+        flow.setAmount(amount);
+        flow.setStatus(CapitalFlowStatus.SUCCEED.getStatus());
+        capitalFlowService.add(flow);
+        wxPay.withdraw(userBank, amount, flow);
+        account.setBalance(account.getBalance().subtract(amount));
         accountService.update(account);
 
         return Result.ok();

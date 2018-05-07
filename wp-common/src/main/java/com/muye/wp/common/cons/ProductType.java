@@ -17,6 +17,7 @@ public enum ProductType {
 
     WITHDRAW_CARPORT_DEPOSIT(10, "WCD", "车位锁押金提取"),
     WITHDRAW_ACCOUNT_DEPOSIT(11, "WAD", "账户押金提取"),
+    WITHDRAW_ACCOUNT_BALANCE(12, "WAB", "账户余额提取"),
     ;
 
     private Integer type;
