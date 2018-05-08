@@ -15,4 +15,6 @@ public interface UserBankService {
     UserBank queryById(Long id);
 
     void add(UserBank userBank);
+
+    void deleteByIdAndUserId(Long id, Long userId);
 }

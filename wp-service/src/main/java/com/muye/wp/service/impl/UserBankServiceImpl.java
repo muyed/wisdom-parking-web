@@ -55,4 +55,9 @@ public class UserBankServiceImpl implements UserBankService {
 
         userBankMapper.insert(userBank);
     }
+
+    @Override
+    public void deleteByIdAndUserId(Long id, Long userId) {
+        userBankMapper.deleteByIdAndUserId(id, userId);
+    }
 }

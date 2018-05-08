@@ -41,4 +41,11 @@ public class UserBankController {
         List<UserBank> bankList = userBankService.queryListByCondition(query, null);
         return Result.ok(bankList);
     }
+
+    @Auth(UserType.GENERAL)
+    @GetMapping("/del/{id}")
+    public Result del(@PathVariable Long id){
+        userBankService.deleteByIdAndUserId(id, SecurityConfig.getLoginId());
+        return Result.ok();
+    }
 }

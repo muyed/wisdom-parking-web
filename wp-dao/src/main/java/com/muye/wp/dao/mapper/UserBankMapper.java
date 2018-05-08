@@ -2,6 +2,7 @@ package com.muye.wp.dao.mapper;
 
 import com.muye.wp.dao.domain.UserBank;
 import com.muye.wp.dao.page.Page;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -37,4 +38,7 @@ public interface UserBankMapper {
             "#{userBank.bankAddr}," +
             "#{userBank.bankCode})")
     int insert(@Param("userBank")UserBank userBank);
+
+    @Delete("delete from user_bank where id = #{id} and user_id = #{userId}")
+    int deleteByIdAndUserId(@Param("id") Long id, @Param("userId") Long userId);
 }
