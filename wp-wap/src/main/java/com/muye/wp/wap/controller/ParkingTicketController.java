@@ -3,11 +3,14 @@ package com.muye.wp.wap.controller;
 import com.muye.wp.common.cons.UserType;
 import com.muye.wp.common.rest.Result;
 import com.muye.wp.dao.domain.ParkingTicket;
+import com.muye.wp.dao.page.Page;
 import com.muye.wp.service.ParkingTicketService;
 import com.muye.wp.wap.security.Auth;
 import com.muye.wp.wap.security.SecurityConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * Created by muye on 18/4/9.
@@ -37,5 +40,13 @@ public class ParkingTicketController {
     @GetMapping("/payOverdue/{id}")
     public Result<String> payOverdue(@PathVariable Long id){
         return Result.ok(parkingTicketService.payOverdue(SecurityConfig.getLoginId(), id));
+    }
+
+    @Auth
+    @GetMapping("/myTicket")
+    public Result<List<ParkingTicket>> myTicket(Page page){
+        ParkingTicket query = new ParkingTicket();
+        query.setUserId(SecurityConfig.getLoginId());
+        return Result.ok(parkingTicketService.queryListByCondition(query, page));
     }
 }
