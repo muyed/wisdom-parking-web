@@ -27,7 +27,7 @@ public class ParkingTicketController {
     public Result matching(@RequestBody ParkingTicket ticket){
         ticket.setUserId(SecurityConfig.getLoginId());
         parkingTicketService.matching(ticket);
-        return Result.ok();
+        return Result.ok(ticket);
     }
 
     @Auth(UserType.GENERAL)
