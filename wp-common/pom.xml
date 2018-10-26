@@ -76,6 +76,11 @@
             <version>1.6.1</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.aliyun.openservices</groupId>
+            <artifactId>ons-client</artifactId>
+            <version>1.7.8.Final</version>
+        </dependency>
     </dependencies>
 
 </project>
