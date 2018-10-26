@@ -1,6 +1,8 @@
 package com.muye.wp.common.component;
 
 import com.aliyun.openservices.ons.api.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +14,8 @@ import java.util.Properties;
  */
 @Component
 public class MQTTComponent implements InitializingBean {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MQTTComponent.class);
 
     private static final String ACCESS_KEY = "LTAIqGaobbCeE1Fk";
 
@@ -44,9 +48,12 @@ public class MQTTComponent implements InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception {
         for (;;){
+
+            LOGGER.info("send test...");
+
             send("testTag", "test body");
 
-            Thread.sleep(1000 * 60 * 5);
+            Thread.sleep(1000 * 10);
         }
     }
 }
