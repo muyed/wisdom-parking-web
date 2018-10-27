@@ -46,14 +46,22 @@ public class MQTTComponent implements InitializingBean {
     }
 
     @Override
-    public void afterPropertiesSet() throws Exception {
-        for (;;){
+    public void afterPropertiesSet() {
+        new Thread(() -> {
+            for (;;){
 
-            LOGGER.info("send test...");
+                LOGGER.info("send test...");
 
-            send("testTag", "test body");
+                try {
 
-            Thread.sleep(1000 * 10);
-        }
+                    send("testTag", "test body");
+                    Thread.sleep(1000 * 10);
+                }catch (Exception e){
+
+
+                }
+            }
+        }).start();
+
     }
 }
