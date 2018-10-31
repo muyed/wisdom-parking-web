@@ -23,6 +23,8 @@ public class MQTTComponent implements InitializingBean {
 
     private static final String TOPIC = "PARKING_CARPORT";
 
+    private static final String GROUP_ID = "GID_PARKING_CARPORT";
+
     private static final String PRODUCER_ID = "PID_PC_PRO";
 
     private static final String CONSUMER_ID = "CID_PC_CON";
@@ -40,8 +42,9 @@ public class MQTTComponent implements InitializingBean {
         producer.start();
     }
 
-    public void send(String tag, String body) throws Exception{
+    public void send(String deviceId, String tag, String body) throws Exception{
         Message message = new Message(TOPIC, tag, body.getBytes("UTF-8"));
+        message.putUserProperties("mqttSecondTopic", "/p2p/" + GROUP_ID + "@@@" + deviceId);
         producer.send(message);
     }
 
@@ -54,11 +57,11 @@ public class MQTTComponent implements InitializingBean {
 
                 try {
 
-                    send("testTag", "test body");
+                    send("MQTTTEST", "testTag", "test body");
                     Thread.sleep(1000 * 10);
                 }catch (Exception e){
 
-
+                    e.printStackTrace();
                 }
             }
         }).start();
