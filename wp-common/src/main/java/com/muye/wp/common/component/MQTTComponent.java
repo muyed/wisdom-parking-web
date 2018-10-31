@@ -31,6 +31,8 @@ public class MQTTComponent implements InitializingBean {
 
     private Producer producer;
 
+    private Consumer consumer;
+
     @PostConstruct
     public void init(){
         final Properties properties = new Properties();
@@ -40,12 +42,32 @@ public class MQTTComponent implements InitializingBean {
 
         producer = ONSFactory.createProducer(properties);
         producer.start();
+
+
     }
 
     public void send(String deviceId, String tag, String body) throws Exception{
         Message message = new Message(TOPIC, tag, body.getBytes("UTF-8"));
         message.putUserProperties("mqttSecondTopic", "/p2p/" + GROUP_ID + "@@@" + deviceId);
         producer.send(message);
+    }
+
+
+    public void listener(){
+        Properties properties = new Properties();
+        properties.put(PropertyKeyConst.ConsumerId, CONSUMER_ID);
+        properties.put(PropertyKeyConst.AccessKey, ACCESS_KEY);
+        properties.put(PropertyKeyConst.SecretKey, SECRET_KET);
+        consumer =ONSFactory.createConsumer(properties);
+
+        consumer.subscribe(TOPIC, "*", ((message, consumeContext) -> {
+            try {
+                LOGGER.info("mqttmq body:" + new String(message.getBody(), "utf-8"));
+                return Action.CommitMessage;
+            } catch (Exception e) {
+                return Action.ReconsumeLater;
+            }
+        }));
     }
 
     @Override
@@ -56,15 +78,15 @@ public class MQTTComponent implements InitializingBean {
                 LOGGER.info("send test...");
 
                 try {
-
                     send("MQTTTEST", "testTag", "test body");
-                    Thread.sleep(1000 * 10);
+                    Thread.sleep(1000 * 30);
                 }catch (Exception e){
-
                     e.printStackTrace();
                 }
             }
         }).start();
 
+
+        listener();
     }
 }
